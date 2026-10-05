@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Events\ActivityRecorded;
 use App\Models\Concerns\BelongsToWorkspace;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -27,6 +28,18 @@ class Activity extends Model
         return [
             'properties' => 'array',
         ];
+    }
+
+    /**
+     * Hide finance events from people who can't see invoices or expenses.
+     *
+     * @param  Builder<Activity>  $query
+     */
+    public function scopeVisibleTo(Builder $query, User $user): void
+    {
+        $query
+            ->unless($user->can('invoices.view'), fn ($query) => $query->where('event', 'not like', 'invoice.%'))
+            ->unless($user->can('expenses.view'), fn ($query) => $query->where('event', 'not like', 'expense.%'));
     }
 
     /**

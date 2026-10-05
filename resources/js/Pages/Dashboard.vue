@@ -63,9 +63,11 @@ const hours = (value) => `${formatNumber(value, { decimals: 1 })}h`;
 // Live activity: prepend new entries pushed over the workspace channel.
 const liveActivity = ref([]);
 const feed = computed(() => [...liveActivity.value, ...props.activity].slice(0, 8));
-useRealtime(() => `workspace.${page.props.workspace.id}`, {
-    '.activity.recorded': ({ activity }) => liveActivity.value.unshift(activity),
-});
+const pushActivity = ({ activity }) => liveActivity.value.unshift(activity);
+useRealtime(() => `workspace.${page.props.workspace.id}`, { '.activity.recorded': pushActivity });
+// Invoice and expense events arrive on channels that only people with access can join.
+useRealtime(() => (can('invoices.view') ? `workspace.${page.props.workspace.id}.invoices` : null), { '.activity.recorded': pushActivity });
+useRealtime(() => (can('expenses.view') ? `workspace.${page.props.workspace.id}.expenses` : null), { '.activity.recorded': pushActivity });
 </script>
 
 <template>

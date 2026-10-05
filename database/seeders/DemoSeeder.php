@@ -357,6 +357,7 @@ class DemoSeeder extends Seeder
         $invoices = $this->seedInvoices($clients, $projects, $people['owner']);
         $this->seedExpenses($people, $projects);
         $this->seedFiles($workspace, $people, $projects, $clients);
+        $this->seedHistory($people['owner']);
         $this->seedActivity($people, $hannah, $projects, $clients, $invoices);
         $this->seedNotifications($owner, $people, $hannah, $projects, $invoices);
     }
@@ -1004,6 +1005,44 @@ class DemoSeeder extends Seeder
             $activity = Activity::record($name, $description, $subject, $event[5] ?? [], $causer);
             $activity->forceFill(['created_at' => $at, 'updated_at' => $at])->saveQuietly();
         }
+    }
+
+    /**
+     * Timeline entries for work that happened before the hand-written recent events,
+     * derived from the records themselves so dates and people always line up.
+     */
+    protected function seedHistory(User $owner): void
+    {
+        $cutoff = now()->subDays(13);
+        $recurringVendors = ['Figma', 'Adobe', 'Google', 'Vercel', 'Second Home'];
+
+        $log = function (string $event, string $description, $subject, ?User $causer, CarbonInterface $at) {
+            Activity::record($event, $description, $subject, [], $causer)
+                ->forceFill(['created_at' => $at, 'updated_at' => $at])
+                ->saveQuietly();
+        };
+
+        Project::with('owner')->where('created_at', '<', $cutoff)->get()
+            ->each(fn (Project $project) => $log('project.created', 'created project', $project, $project->owner, $project->created_at));
+
+        Milestone::with('project.owner')->where('status', 'completed')->where('completed_at', '<', $cutoff)->get()
+            ->each(fn (Milestone $milestone) => $log('milestone.completed', 'completed milestone', $milestone, $milestone->project->owner, $milestone->completed_at->copy()->setTime(16, 20)));
+
+        Task::with('assignee')->where('status', TaskStatus::Done)->where('completed_at', '<', $cutoff)->get()
+            ->each(fn (Task $task) => $log('task.completed', 'completed task', $task, $task->assignee ?? $owner, $task->completed_at));
+
+        Attachment::with('uploader')->where('created_at', '<', $cutoff)->get()
+            ->each(fn (Attachment $file) => $log('file.uploaded', 'uploaded', $file, $file->uploader, $file->created_at));
+
+        Expense::with('user')->whereNotIn('vendor', $recurringVendors)->where('spent_on', '<', $cutoff)->get()
+            ->each(function (Expense $expense) use ($log, $owner) {
+                $submitted = $expense->spent_on->copy()->setTime(17, 10);
+                $log('expense.created', 'submitted expense', $expense, $expense->user, $submitted);
+
+                if (in_array($expense->status, [ExpenseStatus::Approved, ExpenseStatus::Reimbursed], true)) {
+                    $log('expense.approved', 'approved expense', $expense, $owner, $submitted->copy()->addDay()->setTime(9, 30));
+                }
+            });
     }
 
     /**

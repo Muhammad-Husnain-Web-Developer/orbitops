@@ -39,7 +39,7 @@ class DashboardController extends Controller
                 Project::open()->withProgress()->with('client:id,name')->orderBy('due_date')->limit(6)->get()
             )->values() : [], 'charts'),
             'activity' => fn () => $user->can('activity.view')
-                ? ActivityResource::collection(Activity::with('causer')->latest()->limit(8)->get())
+                ? ActivityResource::collection(Activity::with('causer')->visibleTo($user)->latest()->limit(8)->get())
                 : [],
             'deadlines' => fn () => $this->deadlines($user),
             'overdueInvoices' => fn () => $finance

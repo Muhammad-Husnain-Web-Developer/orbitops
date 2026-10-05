@@ -24,7 +24,14 @@ class ActivityRecorded implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        return [new PrivateChannel('workspace.'.$this->activity->workspace_id)];
+        // Finance events carry amounts, so only people who can see that area receive them.
+        $area = match (true) {
+            str_starts_with($this->activity->event, 'invoice.') => '.invoices',
+            str_starts_with($this->activity->event, 'expense.') => '.expenses',
+            default => '',
+        };
+
+        return [new PrivateChannel('workspace.'.$this->activity->workspace_id.$area)];
     }
 
     public function broadcastAs(): string
