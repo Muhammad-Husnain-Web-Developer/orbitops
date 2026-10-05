@@ -16,6 +16,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Social links
+    |--------------------------------------------------------------------------
+    |
+    | Footer links. LinkedIn and X are placeholders until real profiles exist.
+    |
+    */
+
+    'social' => [
+        'github' => env('ORBITOPS_GITHUB_URL', 'https://github.com/muhammad-husnain-web-developer/orbitops'),
+        'linkedin' => env('ORBITOPS_LINKEDIN_URL', 'https://www.linkedin.com/'),
+        'x' => env('ORBITOPS_X_URL', 'https://x.com/'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Pricing
     |--------------------------------------------------------------------------
     |
