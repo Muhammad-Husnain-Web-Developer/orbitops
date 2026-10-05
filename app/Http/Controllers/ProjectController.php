@@ -60,7 +60,8 @@ class ProjectController extends Controller
             'projects' => ProjectResource::collection($projects),
             'filters' => $filters,
             'clients' => fn () => Client::orderBy('name')->get(['id', 'name']),
-            'counts' => fn () => Project::query()->selectRaw('status, COUNT(*) as total')->groupBy('status')->pluck('total', 'status'),
+            // Not "counts": that name is shared with the sidebar badges.
+            'statusCounts' => fn () => (object) Project::query()->selectRaw('status, COUNT(*) as total')->groupBy('status')->pluck('total', 'status')->all(),
         ]);
     }
 

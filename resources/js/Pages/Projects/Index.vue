@@ -28,17 +28,17 @@ const props = defineProps({
     projects: { type: Object, required: true },
     filters: { type: Object, required: true },
     clients: { type: Array, required: true },
-    counts: { type: Object, required: true },
+    statusCounts: { type: Object, required: true },
 });
 
 const { can } = usePermissions();
 const { options } = useEnums();
 const { filters, loading, reset, sortBy } = useFilters(props.filters, { route: 'projects.index', only: ['projects', 'filters'] });
 
-const openCount = computed(() => ['planning', 'active', 'on_hold'].reduce((sum, key) => sum + (props.counts[key] ?? 0), 0));
+const openCount = computed(() => ['planning', 'active', 'on_hold'].reduce((sum, key) => sum + (props.statusCounts[key] ?? 0), 0));
 const statusTabs = computed(() => [
     { key: 'open', label: 'Open', count: openCount.value },
-    ...options('projectStatus').map((status) => ({ key: status.value, label: status.label, count: props.counts[status.value] ?? 0 })),
+    ...options('projectStatus').map((status) => ({ key: status.value, label: status.label, count: props.statusCounts[status.value] ?? 0 })),
 ]);
 
 const clientOptions = computed(() => props.clients.map((client) => ({ value: String(client.id), label: client.name })));

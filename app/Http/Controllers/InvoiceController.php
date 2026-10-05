@@ -52,7 +52,8 @@ class InvoiceController extends Controller
         return inertia('Invoices/Index', [
             'invoices' => InvoiceResource::collection($invoices),
             'filters' => $filters,
-            'counts' => fn () => (object) Invoice::query()->selectRaw('status, count(*) as aggregate')->groupBy('status')->pluck('aggregate', 'status')->all(),
+            // Not "counts": that name is shared with the sidebar badges.
+            'statusCounts' => fn () => (object) Invoice::query()->selectRaw('status, count(*) as aggregate')->groupBy('status')->pluck('aggregate', 'status')->all(),
             'stats' => fn () => $this->stats(),
             'clients' => fn () => Client::orderBy('name')->get(['id', 'name']),
         ]);

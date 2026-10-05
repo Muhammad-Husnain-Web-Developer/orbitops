@@ -22,7 +22,8 @@ class NotificationController extends Controller
             ->withQueryString();
 
         return inertia('Notifications/Index', [
-            'notifications' => NotificationResource::collection($notifications),
+            // Not "notifications": that name is the shared unread counter used by the bell.
+            'items' => NotificationResource::collection($notifications),
             'filter' => $filter,
         ]);
     }

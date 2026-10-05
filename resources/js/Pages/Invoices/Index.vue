@@ -23,7 +23,7 @@ import { daysUntil, formatDate, formatMoney } from '@/lib/format';
 const props = defineProps({
     invoices: { type: Object, required: true },
     filters: { type: Object, required: true },
-    counts: { type: Object, required: true },
+    statusCounts: { type: Object, required: true },
     stats: { type: Object, required: true },
     clients: { type: Array, required: true },
 });
@@ -31,14 +31,14 @@ const props = defineProps({
 const { can } = usePermissions();
 const { filters, loading, reset, sortBy } = useFilters(props.filters, { route: 'invoices.index', only: ['invoices', 'filters'], wait: 250 });
 
-const total = computed(() => Object.values(props.counts).reduce((sum, count) => sum + count, 0));
+const total = computed(() => Object.values(props.statusCounts).reduce((sum, count) => sum + count, 0));
 const tabs = computed(() => [
     { key: '', label: 'All', count: total.value },
-    { key: 'draft', label: 'Drafts', count: props.counts.draft ?? 0 },
-    { key: 'sent', label: 'Sent', count: props.counts.sent ?? 0 },
-    { key: 'overdue', label: 'Overdue', count: props.counts.overdue ?? 0 },
-    { key: 'paid', label: 'Paid', count: props.counts.paid ?? 0 },
-    { key: 'cancelled', label: 'Cancelled', count: props.counts.cancelled ?? 0 },
+    { key: 'draft', label: 'Drafts', count: props.statusCounts.draft ?? 0 },
+    { key: 'sent', label: 'Sent', count: props.statusCounts.sent ?? 0 },
+    { key: 'overdue', label: 'Overdue', count: props.statusCounts.overdue ?? 0 },
+    { key: 'paid', label: 'Paid', count: props.statusCounts.paid ?? 0 },
+    { key: 'cancelled', label: 'Cancelled', count: props.statusCounts.cancelled ?? 0 },
 ]);
 
 const clientOptions = computed(() => props.clients.map((client) => ({ value: String(client.id), label: client.name })));
@@ -82,7 +82,7 @@ async function send(invoice) {
     }
 
     if (await confirm({ title: reminder ? `Send a reminder for ${invoice.number}?` : `Send ${invoice.number}?`, description: `An email goes to ${invoice.client.email}.`, confirmLabel: reminder ? 'Send reminder' : 'Send invoice', tone: 'accent' })) {
-        router.post(route('invoices.send', invoice.id), {}, { preserveScroll: true, only: ['invoices', 'counts', 'stats'], onError });
+        router.post(route('invoices.send', invoice.id), {}, { preserveScroll: true, only: ['invoices', 'statusCounts', 'stats', 'counts'], onError });
     }
 }
 
