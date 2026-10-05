@@ -32,7 +32,9 @@ const options = computed(() => ({ preserveScroll: true, preserveState: true, onl
                 class="inline-flex size-8 items-center justify-center rounded-md border border-line text-ink-2 transition-colors"
                 :class="prev ? 'hover:bg-hover hover:text-ink' : 'pointer-events-none opacity-40'"
                 aria-label="Previous page"
-                rel="prev"
+                :role="prev ? undefined : 'link'"
+                :aria-disabled="prev ? undefined : 'true'"
+                :rel="prev ? 'prev' : undefined"
             >
                 <ChevronLeft class="size-4" />
             </component>
@@ -56,7 +58,9 @@ const options = computed(() => ({ preserveScroll: true, preserveState: true, onl
                 class="inline-flex size-8 items-center justify-center rounded-md border border-line text-ink-2 transition-colors"
                 :class="next ? 'hover:bg-hover hover:text-ink' : 'pointer-events-none opacity-40'"
                 aria-label="Next page"
-                rel="next"
+                :role="next ? undefined : 'link'"
+                :aria-disabled="next ? undefined : 'true'"
+                :rel="next ? 'next' : undefined"
             >
                 <ChevronRight class="size-4" />
             </component>

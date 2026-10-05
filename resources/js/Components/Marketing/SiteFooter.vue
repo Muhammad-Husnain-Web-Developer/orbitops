@@ -59,6 +59,7 @@ const socials = [
                 <p>Built with Laravel, Inertia.js, Vue, Tailwind CSS &amp; GSAP.</p>
             </div>
         </div>
-        <p class="pointer-events-none -mb-[0.22em] text-center text-[clamp(4rem,17vw,15rem)] leading-none font-semibold tracking-[-0.06em] text-ink/[0.035] select-none" aria-hidden="true">OrbitOps</p>
+        <!-- Decorative wordmark drawn as CSS content so it isn't read or audited as text. -->
+        <p class="pointer-events-none -mb-[0.22em] text-center text-[clamp(4rem,17vw,15rem)] leading-none font-semibold tracking-[-0.06em] text-ink/[0.035] select-none before:content-['OrbitOps']" aria-hidden="true"></p>
     </footer>
 </template>

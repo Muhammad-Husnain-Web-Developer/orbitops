@@ -28,9 +28,9 @@ const pillars = [
                 <span class="size-2.5 rounded-full bg-white/15" />
                 <span class="size-2.5 rounded-full bg-white/15" />
                 <span class="size-2.5 rounded-full bg-white/15" />
-                <span class="ml-3 font-mono text-[0.6875rem] text-white/40">app/Models/Scopes/WorkspaceScope.php</span>
+                <span class="ml-3 font-mono text-[0.6875rem] text-white/60">app/Models/Scopes/WorkspaceScope.php</span>
             </div>
-            <pre class="overflow-x-auto p-5 font-mono text-[0.8125rem] leading-relaxed text-white/80"><code><span class="text-white/35">// Applied to every tenant-owned model.</span>
+            <pre class="overflow-x-auto p-5 font-mono text-[0.8125rem] leading-relaxed text-white/80"><code><span class="text-white/55">// Applied to every tenant-owned model.</span>
 <span class="text-[#c4b5fd]">public function</span> <span class="text-[#67e8f9]">apply</span>(Builder $builder, Model $model): <span class="text-[#c4b5fd]">void</span>
 {
     $workspaceId = app(CurrentWorkspace::<span class="text-[#c4b5fd]">class</span>)-><span class="text-[#67e8f9]">id</span>();
@@ -43,8 +43,8 @@ const pillars = [
     }
 }
 
-<span class="text-white/35">// Project::withProgress()->open()->get();</span>
-<span class="text-white/35">// → select * from projects where workspace_id = 12 …</span></code></pre>
+<span class="text-white/55">// Project::withProgress()->open()->get();</span>
+<span class="text-white/55">// → select * from projects where workspace_id = 12 …</span></code></pre>
         </div>
     </div>
 </template>

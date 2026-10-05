@@ -13,6 +13,23 @@ export const swatches = {
 
 export const colorKeys = Object.keys(swatches);
 
+/*
+ * Solid fills for white text (initials, project codes). Dark enough for ≥5:1
+ * contrast with white in both themes, unlike the lighter dark-mode swatches.
+ */
+export const solidSwatches = {
+    violet: 'bg-[#5b4af0]',
+    blue: 'bg-[#2459c9]',
+    cyan: 'bg-[#0e7490]',
+    emerald: 'bg-[#047857]',
+    amber: 'bg-[#b45309]',
+    rose: 'bg-[#be123c]',
+};
+
+export function solidSwatch(key) {
+    return solidSwatches[key] ?? solidSwatches.violet;
+}
+
 export function swatch(key) {
     return swatches[key] ?? swatches.violet;
 }
@@ -22,13 +39,13 @@ export const chartSlots = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)',
 
 /** Stable avatar tint from a name, so people keep their colour everywhere. */
 const avatarTints = [
-    'bg-violet-500/15 text-violet-700 dark:text-violet-300',
-    'bg-sky-500/15 text-sky-700 dark:text-sky-300',
-    'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300',
-    'bg-amber-500/15 text-amber-700 dark:text-amber-300',
-    'bg-rose-500/15 text-rose-700 dark:text-rose-300',
-    'bg-cyan-500/15 text-cyan-700 dark:text-cyan-300',
-    'bg-fuchsia-500/15 text-fuchsia-700 dark:text-fuchsia-300',
+    'bg-violet-500/15 text-violet-800 dark:text-violet-300',
+    'bg-sky-500/15 text-sky-800 dark:text-sky-300',
+    'bg-emerald-500/15 text-emerald-800 dark:text-emerald-300',
+    'bg-amber-500/15 text-amber-800 dark:text-amber-300',
+    'bg-rose-500/15 text-rose-800 dark:text-rose-300',
+    'bg-cyan-500/15 text-cyan-800 dark:text-cyan-300',
+    'bg-fuchsia-500/15 text-fuchsia-800 dark:text-fuchsia-300',
 ];
 
 export function avatarTint(name = '') {

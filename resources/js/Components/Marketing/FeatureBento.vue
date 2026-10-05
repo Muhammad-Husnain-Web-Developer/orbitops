@@ -43,7 +43,7 @@ function spotlight(event) {
             <div class="relative mt-auto pt-6" aria-hidden="true">
                 <!-- Mini illustrations, one per feature -->
                 <div v-if="feature.key === 'workspaces'" class="space-y-1.5">
-                    <div v-for="[initials, name, color, offset] in [['AS', 'Acme Studio', 'bg-[#6d5dfc] dark:bg-[#8b7cff]', ''], ['NL', 'Nova Labs', 'bg-[#0891b2] dark:bg-[#22d3ee]', 'translate-x-3'], ['PF', 'PixelFoundry', 'bg-[#e11d48] dark:bg-[#fb7185]', 'translate-x-6']]" :key="name" class="flex items-center gap-2 rounded-lg border border-line bg-canvas/50 p-2 transition-transform duration-500 group-hover:translate-x-0" :class="offset">
+                    <div v-for="[initials, name, color, offset] in [['AS', 'Acme Studio', 'bg-[#5b4af0]', ''], ['NL', 'Nova Labs', 'bg-[#0e7490]', 'translate-x-3'], ['PF', 'PixelFoundry', 'bg-[#be123c]', 'translate-x-6']]" :key="name" class="flex items-center gap-2 rounded-lg border border-line bg-canvas/50 p-2 transition-transform duration-500 group-hover:translate-x-0" :class="offset">
                         <span class="flex size-6 items-center justify-center rounded-md text-[0.625rem] font-bold text-white" :class="color">{{ initials }}</span>
                         <span class="text-small font-medium text-ink-2">{{ name }}</span>
                     </div>

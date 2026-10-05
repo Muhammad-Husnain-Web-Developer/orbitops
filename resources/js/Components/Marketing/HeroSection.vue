@@ -167,8 +167,8 @@ useGsap(root, ({ motion, desktop }) => {
                 <p class="mt-2 text-small font-semibold text-ink">Homepage Design</p>
                 <div class="mt-2.5 flex items-center justify-between">
                     <div class="flex -space-x-1.5">
-                        <span class="flex size-5 items-center justify-center rounded-full bg-sky-500/20 text-[8px] font-semibold text-sky-600 ring-2 ring-elevated dark:text-sky-300">SC</span>
-                        <span class="flex size-5 items-center justify-center rounded-full bg-violet-500/20 text-[8px] font-semibold text-violet-600 ring-2 ring-elevated dark:text-violet-300">MR</span>
+                        <span class="flex size-5 items-center justify-center rounded-full bg-sky-500/20 text-[8px] font-semibold text-sky-800 ring-2 ring-elevated dark:text-sky-300">SC</span>
+                        <span class="flex size-5 items-center justify-center rounded-full bg-violet-500/20 text-[8px] font-semibold text-violet-800 ring-2 ring-elevated dark:text-violet-300">MR</span>
                     </div>
                     <span class="text-caption text-ink-3">3 comments · 2 files</span>
                 </div>
@@ -176,7 +176,7 @@ useGsap(root, ({ motion, desktop }) => {
 
             <div data-hero-float data-depth="1.6" class="absolute bottom-[26%] left-[4%] hidden w-60 rounded-xl border border-line bg-elevated/90 p-3.5 text-left shadow-overlay backdrop-blur-md lg:block" aria-hidden="true">
                 <div class="flex items-center gap-2.5">
-                    <span class="flex size-7 items-center justify-center rounded-full bg-amber-500/20 text-[10px] font-semibold text-amber-700 dark:text-amber-300">HB</span>
+                    <span class="flex size-7 items-center justify-center rounded-full bg-amber-500/20 text-[10px] font-semibold text-amber-800 dark:text-amber-300">HB</span>
                     <div>
                         <p class="text-small text-ink"><span class="font-semibold">Hannah</span> approved</p>
                         <p class="text-caption text-ink-3">Wireframes · Client portal</p>

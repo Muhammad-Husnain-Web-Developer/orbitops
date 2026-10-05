@@ -120,16 +120,16 @@ const maxClient = computed(() => Math.max(1, ...(props.clients ?? []).map((clien
                 />
             </Card>
             <Card title="Collections" description="Invoices issued in this period">
-                <dl class="space-y-4">
-                    <div>
+                <div class="space-y-4">
+                    <dl>
                         <dt class="text-small text-ink-3">Invoiced</dt>
                         <dd class="text-h2 text-ink tabular">{{ money(summary.invoiced) }}</dd>
-                    </div>
+                    </dl>
                     <div>
-                        <dt class="mb-1.5 flex justify-between text-small text-ink-3"><span>Collected</span><span class="font-medium text-ink tabular">{{ summary.collected_rate }}%</span></dt>
-                        <dd><ProgressBar :value="summary.collected_rate" tone="success" size="sm" label="Share of invoices collected" /></dd>
+                        <p class="mb-1.5 flex justify-between text-small text-ink-3"><span>Collected</span><span class="font-medium text-ink tabular">{{ summary.collected_rate }}%</span></p>
+                        <ProgressBar :value="summary.collected_rate" tone="success" size="sm" label="Share of invoices collected" />
                     </div>
-                    <div class="grid grid-cols-2 gap-4 border-t border-line pt-4">
+                    <dl class="grid grid-cols-2 gap-4 border-t border-line pt-4">
                         <div>
                             <dt class="text-caption text-ink-3">Avg. days to pay</dt>
                             <dd class="text-h3 text-ink tabular">{{ summary.average_days_to_pay ?? '—' }}</dd>
@@ -138,12 +138,12 @@ const maxClient = computed(() => Math.max(1, ...(props.clients ?? []).map((clien
                             <dt class="text-caption text-ink-3">Outstanding now</dt>
                             <dd class="text-h3 text-ink tabular">{{ money(summary.outstanding) }}</dd>
                         </div>
-                    </div>
+                    </dl>
                     <Link v-if="summary.overdue > 0" :href="route('invoices.index', { status: 'overdue' })" class="flex items-center justify-between rounded-lg bg-danger/8 px-3 py-2.5 text-small hover:bg-danger/12">
                         <span class="flex items-center gap-2 text-danger"><Receipt class="size-4" />Overdue</span>
                         <span class="font-medium text-danger tabular">{{ money(summary.overdue) }}</span>
                     </Link>
-                </dl>
+                </div>
             </Card>
         </div>
 

@@ -121,7 +121,7 @@ useGsap(root, ({ motion, desktop }) => {
                         <div class="overflow-hidden rounded-2xl border border-line bg-surface shadow-raised">
                             <div class="flex items-center justify-between border-b border-line bg-amber-500/8 px-6 py-3">
                                 <span class="text-caption font-medium text-ink-2">Northstar Media · Client portal</span>
-                                <span class="rounded-full bg-amber-500/15 px-2 py-0.5 text-[0.6875rem] font-medium text-amber-700 dark:text-amber-300">Client view</span>
+                                <span class="rounded-full bg-amber-500/15 px-2 py-0.5 text-[0.6875rem] font-medium text-amber-800 dark:text-amber-300">Client view</span>
                             </div>
                             <div class="p-6">
                                 <p class="text-caption text-ink-3">Awaiting your approval</p>

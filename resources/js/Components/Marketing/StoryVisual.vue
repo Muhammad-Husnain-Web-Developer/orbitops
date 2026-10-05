@@ -6,9 +6,9 @@ defineProps({
 });
 
 const workspaces = [
-    ['AS', 'Acme Studio', 'Creative Agency', 'bg-[#6d5dfc] dark:bg-[#8b7cff]', true],
-    ['NL', 'Nova Labs', 'Software Company', 'bg-[#0891b2] dark:bg-[#22d3ee]', false],
-    ['PF', 'PixelFoundry', 'Design Studio', 'bg-[#e11d48] dark:bg-[#fb7185]', false],
+    ['AS', 'Acme Studio', 'Creative Agency', 'bg-[#5b4af0]', true],
+    ['NL', 'Nova Labs', 'Software Company', 'bg-[#0e7490]', false],
+    ['PF', 'PixelFoundry', 'Design Studio', 'bg-[#be123c]', false],
 ];
 
 const clients = [
@@ -178,7 +178,7 @@ const revenue = [18, 24, 22, 31, 29, 38, 35, 44, 41, 52, 49, 58];
         <template v-else-if="kind === 'portal'">
             <div class="-mx-5 -mt-5 mb-4 flex items-center justify-between border-b border-line bg-amber-500/8 px-5 py-2.5 sm:-mx-6 sm:-mt-6 sm:px-6">
                 <span class="text-caption font-medium text-ink-2">Northstar Media · Client portal</span>
-                <span class="rounded-full bg-amber-500/15 px-2 py-0.5 text-[0.6875rem] font-medium text-amber-700 dark:text-amber-300">Client view</span>
+                <span class="rounded-full bg-amber-500/15 px-2 py-0.5 text-[0.6875rem] font-medium text-amber-800 dark:text-amber-300">Client view</span>
             </div>
             <p class="text-caption text-ink-3">Website Redesign</p>
             <div class="mt-2 h-2 rounded-full bg-subtle"><div class="h-full w-[78%] rounded-full bg-accent" /></div>

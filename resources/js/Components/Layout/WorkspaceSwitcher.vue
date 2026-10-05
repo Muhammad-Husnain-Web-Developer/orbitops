@@ -8,7 +8,7 @@ import Dropdown from '@/Components/UI/Dropdown.vue';
 import DropdownItem from '@/Components/UI/DropdownItem.vue';
 import DropdownLabel from '@/Components/UI/DropdownLabel.vue';
 import DropdownSeparator from '@/Components/UI/DropdownSeparator.vue';
-import { swatch } from '@/lib/colors';
+import { solidSwatch, swatch } from '@/lib/colors';
 import WorkspaceFormModal from './WorkspaceFormModal.vue';
 
 defineProps({
@@ -36,7 +36,7 @@ function switchTo(item) {
                 :class="[open ? 'border-line bg-hover' : '', collapsed ? 'justify-center' : '']"
                 :aria-label="`Current workspace: ${workspace.name}. Switch workspace`"
             >
-                <span class="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg text-caption font-bold text-white shadow-card" :class="workspace.logo_url ? '' : swatch(workspace.accent)">
+                <span class="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg text-caption font-bold text-white shadow-card" :class="workspace.logo_url ? '' : solidSwatch(workspace.accent)">
                     <img v-if="workspace.logo_url" :src="workspace.logo_url" alt="" class="size-full object-cover" />
                     <template v-else>{{ workspace.initials }}</template>
                 </span>
@@ -51,7 +51,7 @@ function switchTo(item) {
         <DropdownLabel>Workspaces</DropdownLabel>
         <DropdownItem v-for="item in page.props.workspaces" :key="item.id" :active="item.id === workspace.id" @select="switchTo(item)">
             <span class="flex items-center gap-2.5">
-                <span class="flex size-6 shrink-0 items-center justify-center rounded-md text-[0.625rem] font-bold text-white" :class="swatch(item.accent)">{{ item.initials }}</span>
+                <span class="flex size-6 shrink-0 items-center justify-center rounded-md text-[0.625rem] font-bold text-white" :class="solidSwatch(item.accent)">{{ item.initials }}</span>
                 <span class="min-w-0 flex-1">
                     <span class="block truncate font-medium">{{ item.name }}</span>
                     <span class="block truncate text-caption text-ink-3">{{ item.industry ?? 'Workspace' }}</span>

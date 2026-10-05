@@ -23,14 +23,14 @@ const priorityTones = { danger: 'bg-danger/10 text-danger', warning: 'bg-warning
     <article
         :data-id="task.id"
         class="group relative cursor-grab rounded-xl border border-line bg-surface p-3 shadow-card transition-[border-color,box-shadow,transform] duration-150 hover:border-line-strong hover:shadow-raised active:cursor-grabbing"
-        :class="task.status === 'done' ? 'opacity-75' : ''"
+        :class="task.status === 'done' ? 'bg-surface/60' : ''"
     >
         <div class="mb-1.5 flex items-center gap-1.5 text-caption text-ink-3">
             <span v-if="showProject && task.project" class="size-1.5 shrink-0 rounded-full" :class="swatch(task.project.color)" aria-hidden="true" />
             <span class="font-mono text-[0.6875rem] tracking-tight">{{ task.key }}</span>
             <span v-if="showProject && task.project" class="truncate">· {{ task.project.name }}</span>
         </div>
-        <button type="button" class="block w-full text-left text-body leading-snug font-medium text-ink after:absolute after:inset-0 focus-visible:outline-none" :class="task.status === 'done' ? 'line-through decoration-ink-3' : ''" @click="$emit('open', task)">
+        <button type="button" class="block w-full text-left text-body leading-snug font-medium text-ink after:absolute after:inset-0 focus-visible:outline-none" :class="task.status === 'done' ? 'text-ink-2 line-through decoration-ink-3' : ''" @click="$emit('open', task)">
             {{ task.title }}
         </button>
         <div class="mt-3 flex items-center gap-2">

@@ -28,7 +28,7 @@ import { openQuickCreate } from '@/composables/useQuickCreate';
 import { useRealtime } from '@/composables/useRealtime';
 import { useTaskDrawer } from '@/composables/useTaskDrawer';
 import { useUrlTab } from '@/composables/useUrlTab';
-import { swatch } from '@/lib/colors';
+import { solidSwatch, swatch } from '@/lib/colors';
 import { dueLabel, formatDate, formatDuration, formatMoney } from '@/lib/format';
 
 const props = defineProps({
@@ -101,7 +101,7 @@ async function remove() {
 
     <header class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <div class="flex items-start gap-4">
-            <span class="mt-1 flex size-12 shrink-0 items-center justify-center rounded-xl font-mono text-small font-bold text-white shadow-card" :class="swatch(project.color)">{{ (project.code || project.name).slice(0, 4) }}</span>
+            <span class="mt-1 flex size-12 shrink-0 items-center justify-center rounded-xl font-mono text-small font-bold text-white shadow-card" :class="solidSwatch(project.color)">{{ (project.code || project.name).slice(0, 4) }}</span>
             <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-2.5">
                     <h1 class="text-h2 text-ink">{{ project.name }}</h1>

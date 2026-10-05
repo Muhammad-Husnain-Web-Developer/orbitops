@@ -26,7 +26,7 @@ import { usePermissions } from '@/composables/usePermissions';
 import { openQuickCreate } from '@/composables/useQuickCreate';
 import { useTheme } from '@/composables/useTheme';
 import { api } from '@/lib/api';
-import { swatch } from '@/lib/colors';
+import { solidSwatch, swatch } from '@/lib/colors';
 import { debounce } from '@/lib/debounce';
 import { primaryNav, visibleItems, workspaceNav } from '@/lib/navigation';
 
@@ -250,7 +250,7 @@ const indexOf = (item) => flat.value.indexOf(item);
                                 @click="run(item)"
                             >
                                 <Avatar v-if="item.avatar" :user="item.avatar" size="sm" decorative />
-                                <span v-else-if="item.swatch" class="flex size-6 items-center justify-center rounded-md text-[0.625rem] font-bold text-white" :class="swatch(item.swatch)">{{ item.initials }}</span>
+                                <span v-else-if="item.swatch" class="flex size-6 items-center justify-center rounded-md text-[0.625rem] font-bold text-white" :class="solidSwatch(item.swatch)">{{ item.initials }}</span>
                                 <span v-else class="flex size-6 shrink-0 items-center justify-center rounded-md border border-line bg-surface text-ink-3">
                                     <span v-if="item.color" class="size-2 rounded-full" :class="swatch(item.color)" />
                                     <component :is="item.icon" v-else class="size-3.5" />

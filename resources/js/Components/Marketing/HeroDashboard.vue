@@ -92,9 +92,9 @@ const expenseLine = 'M0,136 C40,134 60,130 93,131 C126,132 150,126 187,127 C224,
                     <span class="ml-auto rounded border border-line px-1 text-[10px]">⌘K</span>
                 </div>
                 <div class="flex -space-x-1.5">
-                    <span class="flex size-6 items-center justify-center rounded-full bg-violet-500/20 text-[9px] font-semibold text-violet-600 ring-2 ring-canvas dark:text-violet-300">MR</span>
-                    <span class="flex size-6 items-center justify-center rounded-full bg-sky-500/20 text-[9px] font-semibold text-sky-600 ring-2 ring-canvas dark:text-sky-300">SC</span>
-                    <span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/20 text-[9px] font-semibold text-emerald-600 ring-2 ring-canvas dark:text-emerald-300">JO</span>
+                    <span class="flex size-6 items-center justify-center rounded-full bg-violet-500/20 text-[9px] font-semibold text-violet-800 ring-2 ring-canvas dark:text-violet-300">MR</span>
+                    <span class="flex size-6 items-center justify-center rounded-full bg-sky-500/20 text-[9px] font-semibold text-sky-800 ring-2 ring-canvas dark:text-sky-300">SC</span>
+                    <span class="flex size-6 items-center justify-center rounded-full bg-emerald-500/20 text-[9px] font-semibold text-emerald-800 ring-2 ring-canvas dark:text-emerald-300">JO</span>
                 </div>
             </div>
 

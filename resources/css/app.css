@@ -28,14 +28,16 @@
     --line-strong: #d5d5dd;
     --ink: #0b0b12;
     --ink-2: #4a4a57;
-    --ink-3: #7f7f8c;
+    /* Tertiary text: ≥4.5:1 on canvas, surface and subtle (WCAG AA). */
+    --ink-3: #696975;
     --overlay: rgb(10 10 16 / 0.42);
 
-    --success: #15803d;
-    --warning: #b45309;
-    --danger: #dc2626;
+    /* Status text stays ≥5:1 even on its own 10–15% tint (badges). */
+    --success: #166534;
+    --warning: #9a3f08;
+    --danger: #b91c1c;
     --danger-solid: #dc2626;
-    --info: #2563eb;
+    --info: #1d4ed8;
 
     /* Validated categorical chart slots (light): see dataviz palette check. */
     --chart-1: #6d5dfc;
@@ -69,7 +71,8 @@
     --line-strong: #2f2f3b;
     --ink: #f3f3f6;
     --ink-2: #a6a6b4;
-    --ink-3: #6e6e7c;
+    /* Tertiary text: ≥4.5:1 on every dark surface, including hover (WCAG AA). */
+    --ink-3: #8a8a97;
     --overlay: rgb(0 0 0 / 0.62);
 
     --success: #34d399;
@@ -350,11 +353,11 @@
     --line-strong: #d5d5dd;
     --ink: #0b0b12;
     --ink-2: #4a4a57;
-    --ink-3: #6f6f7c;
-    --success: #15803d;
-    --warning: #b45309;
-    --danger: #dc2626;
-    --info: #2563eb;
+    --ink-3: #696975;
+    --success: #166534;
+    --warning: #9a3f08;
+    --danger: #b91c1c;
+    --info: #1d4ed8;
     --ring-highlight: transparent;
     background: var(--surface);
     color: var(--ink);

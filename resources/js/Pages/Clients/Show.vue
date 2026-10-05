@@ -116,11 +116,26 @@ async function archive() {
         <div v-if="tab === 'overview'" class="grid gap-4 lg:grid-cols-3">
             <Card title="Contact" class="lg:col-span-1">
                 <dl class="space-y-3.5 text-body">
-                    <div class="flex items-center gap-3"><Avatar :name="client.contact_name ?? client.name" size="md" decorative /><div><dt class="sr-only">Primary contact</dt><dd class="font-medium text-ink">{{ client.contact_name ?? 'No contact yet' }}</dd><p class="text-caption text-ink-3">Primary contact</p></div></div>
-                    <div v-if="client.email" class="flex items-center gap-3 text-ink-2"><Mail class="size-4 text-ink-3" /><dt class="sr-only">Email</dt><dd><a :href="`mailto:${client.email}`" class="hover:text-ink hover:underline">{{ client.email }}</a></dd></div>
-                    <div v-if="client.phone" class="flex items-center gap-3 text-ink-2"><Phone class="size-4 text-ink-3" /><dt class="sr-only">Phone</dt><dd>{{ client.phone }}</dd></div>
-                    <div v-if="client.website" class="flex items-center gap-3 text-ink-2"><Globe class="size-4 text-ink-3" /><dt class="sr-only">Website</dt><dd><a :href="client.website" target="_blank" rel="noopener noreferrer" class="hover:text-ink hover:underline">{{ client.website.replace(/^https?:\/\//, '') }}</a></dd></div>
-                    <div v-if="client.city || client.country" class="flex items-center gap-3 text-ink-2"><MapPin class="size-4 text-ink-3" /><dt class="sr-only">Location</dt><dd>{{ [client.city, client.country].filter(Boolean).join(', ') }}</dd></div>
+                    <div class="flex items-center gap-3">
+                        <dt class="shrink-0"><Avatar :name="client.contact_name ?? client.name" size="md" decorative /><span class="sr-only">Primary contact</span></dt>
+                        <dd><span class="block font-medium text-ink">{{ client.contact_name ?? 'No contact yet' }}</span><span class="block text-caption text-ink-3" aria-hidden="true">Primary contact</span></dd>
+                    </div>
+                    <div v-if="client.email" class="flex items-center gap-3 text-ink-2">
+                        <dt class="shrink-0"><Mail class="size-4 text-ink-3" aria-hidden="true" /><span class="sr-only">Email</span></dt>
+                        <dd class="min-w-0 truncate"><a :href="`mailto:${client.email}`" class="hover:text-ink hover:underline">{{ client.email }}</a></dd>
+                    </div>
+                    <div v-if="client.phone" class="flex items-center gap-3 text-ink-2">
+                        <dt class="shrink-0"><Phone class="size-4 text-ink-3" aria-hidden="true" /><span class="sr-only">Phone</span></dt>
+                        <dd>{{ client.phone }}</dd>
+                    </div>
+                    <div v-if="client.website" class="flex items-center gap-3 text-ink-2">
+                        <dt class="shrink-0"><Globe class="size-4 text-ink-3" aria-hidden="true" /><span class="sr-only">Website</span></dt>
+                        <dd class="min-w-0 truncate"><a :href="client.website" target="_blank" rel="noopener noreferrer" class="hover:text-ink hover:underline">{{ client.website.replace(/^https?:\/\//, '') }}</a></dd>
+                    </div>
+                    <div v-if="client.city || client.country" class="flex items-center gap-3 text-ink-2">
+                        <dt class="shrink-0"><MapPin class="size-4 text-ink-3" aria-hidden="true" /><span class="sr-only">Location</span></dt>
+                        <dd>{{ [client.city, client.country].filter(Boolean).join(', ') }}</dd>
+                    </div>
                 </dl>
             </Card>
             <Card title="Recent activity" class="lg:col-span-2">
