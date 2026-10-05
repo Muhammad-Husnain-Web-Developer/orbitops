@@ -115,7 +115,7 @@ function create(status = 'todo') {
                 <template #cell-status="{ row }"><StatusBadge group="taskStatus" :value="row.status" /></template>
                 <template #cell-priority="{ row }"><StatusBadge group="taskPriority" :value="row.priority" size="sm" /></template>
                 <template #cell-assignee="{ row }">
-                    <span v-if="row.assignee" class="flex items-center gap-2"><Avatar :user="row.assignee" size="sm" /><span class="truncate">{{ row.assignee.name }}</span></span>
+                    <span v-if="row.assignee" class="flex items-center gap-2"><Avatar :user="row.assignee" size="sm" decorative /><span class="truncate">{{ row.assignee.name }}</span></span>
                     <span v-else class="text-ink-3">Unassigned</span>
                 </template>
                 <template #cell-due_date="{ row }">

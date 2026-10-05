@@ -55,7 +55,7 @@ function parts(body) {
                 class="group flex gap-3"
                 :class="variant === 'chat' && comment.is_mine ? 'flex-row-reverse' : ''"
             >
-                <Avatar :user="comment.author" size="md" class="shrink-0" />
+                <Avatar :user="comment.author" size="md" class="shrink-0" decorative />
                 <div class="min-w-0" :class="variant === 'chat' ? 'max-w-[85%]' : 'flex-1'">
                     <div class="flex items-baseline gap-2" :class="variant === 'chat' && comment.is_mine ? 'flex-row-reverse' : ''">
                         <span class="text-body font-medium text-ink">{{ comment.author?.name ?? 'Former member' }}</span>

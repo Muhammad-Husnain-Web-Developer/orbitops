@@ -26,7 +26,7 @@ function toggle(id) {
                 :class="model.includes(member.id) ? 'border-accent/50 bg-accent/10 text-ink' : 'border-line text-ink-2 hover:border-line-strong hover:text-ink'"
                 @click="toggle(member.id)"
             >
-                <Avatar :user="member" size="xs" />
+                <Avatar :user="member" size="xs" decorative />
                 {{ member.name }}
             </button>
         </div>

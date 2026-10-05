@@ -112,7 +112,7 @@ async function remove() {
                     <Link v-if="project.client" :href="route('clients.show', project.client.id)" class="hover:text-ink hover:underline">{{ project.client.name }}</Link>
                     <span v-else>Internal project</span>
                     <span v-if="project.due_date" class="inline-flex items-center gap-1"><CalendarDays class="size-3.5" />{{ dueLabel(project.due_date) }}</span>
-                    <span v-if="project.owner" class="inline-flex items-center gap-1.5"><Avatar :user="project.owner" size="xs" />Led by {{ project.owner.name }}</span>
+                    <span v-if="project.owner" class="inline-flex items-center gap-1.5"><Avatar :user="project.owner" size="xs" decorative />Led by {{ project.owner.name }}</span>
                 </p>
             </div>
         </div>
@@ -170,7 +170,7 @@ async function remove() {
                 <Card title="Team">
                     <ul class="space-y-3">
                         <li v-for="member in project.members" :key="member.id" class="flex items-center gap-3">
-                            <Avatar :user="member" size="md" />
+                            <Avatar :user="member" size="md" decorative />
                             <div class="min-w-0"><p class="truncate text-body font-medium text-ink">{{ member.name }}</p><p class="truncate text-caption text-ink-3">{{ member.title ?? 'Team member' }}</p></div>
                             <Badge v-if="member.id === project.owner_id" size="sm" tone="accent" class="ml-auto">Lead</Badge>
                         </li>

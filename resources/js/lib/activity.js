@@ -46,6 +46,8 @@ const icons = {
     'client.created': [Briefcase, 'text-accent-text bg-accent/10'],
     'expense.approved': [Wallet, 'text-success bg-success/10'],
     'expense.created': [Wallet, 'text-ink-2 bg-subtle'],
+    'expense.rejected': [Wallet, 'text-danger bg-danger/10'],
+    'expense.reimbursed': [Wallet, 'text-info bg-info/10'],
 };
 
 export function activityIcon(event) {

@@ -21,7 +21,7 @@ const groups = computed(() => (props.grouped ? groupByDay(props.items) : [{ labe
                 <li v-for="(item, index) in group.items" :key="item.id" class="relative flex gap-3 pb-5 last:pb-0">
                     <span v-if="index < group.items.length - 1" class="absolute top-9 bottom-1 left-4 w-px bg-line" aria-hidden="true" />
                     <span class="relative shrink-0">
-                        <Avatar :user="item.causer" :name="item.causer ? null : 'System'" size="md" />
+                        <Avatar :user="item.causer" :name="item.causer ? null : 'System'" size="md" decorative />
                         <span class="absolute -right-1 -bottom-1 flex size-4.5 items-center justify-center rounded-full ring-2 ring-surface" :class="activityIcon(item.event).tone">
                             <component :is="activityIcon(item.event).icon" class="size-2.5" aria-hidden="true" />
                         </span>

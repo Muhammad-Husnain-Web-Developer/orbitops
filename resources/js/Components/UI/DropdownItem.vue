@@ -11,12 +11,14 @@ const props = defineProps({
     disabled: { type: Boolean, default: false },
     active: { type: Boolean, default: false },
     keepOpen: { type: Boolean, default: false },
+    external: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(['select']);
 const dropdown = inject('dropdown', null);
 
-const component = computed(() => (props.href ? Link : 'button'));
+// External links (files, receipts) are plain anchors in a new tab, not Inertia visits.
+const component = computed(() => (props.href && props.external ? 'a' : props.href ? Link : 'button'));
 
 function select(event) {
     if (props.disabled) {
@@ -39,6 +41,8 @@ function select(event) {
         :method="method ?? undefined"
         :as="href && method && method !== 'get' ? 'button' : undefined"
         :type="href ? undefined : 'button'"
+        :target="external ? '_blank' : undefined"
+        :rel="external ? 'noopener' : undefined"
         role="menuitem"
         tabindex="-1"
         :aria-disabled="disabled || undefined"

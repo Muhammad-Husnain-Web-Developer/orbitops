@@ -249,7 +249,7 @@ const indexOf = (item) => flat.value.indexOf(item);
                                 @mousemove="active = indexOf(item)"
                                 @click="run(item)"
                             >
-                                <Avatar v-if="item.avatar" :user="item.avatar" size="sm" />
+                                <Avatar v-if="item.avatar" :user="item.avatar" size="sm" decorative />
                                 <span v-else-if="item.swatch" class="flex size-6 items-center justify-center rounded-md text-[0.625rem] font-bold text-white" :class="swatch(item.swatch)">{{ item.initials }}</span>
                                 <span v-else class="flex size-6 shrink-0 items-center justify-center rounded-md border border-line bg-surface text-ink-3">
                                     <span v-if="item.color" class="size-2 rounded-full" :class="swatch(item.color)" />

@@ -92,7 +92,7 @@ async function archive(client) {
         >
             <template #cell-name="{ row }">
                 <Link :href="route('clients.show', row.id)" class="flex items-center gap-3">
-                    <Avatar :name="row.name" square size="md" />
+                    <Avatar :name="row.name" square size="md" decorative />
                     <span class="min-w-0">
                         <span class="block truncate font-medium text-ink">{{ row.name }}</span>
                         <span class="block truncate text-caption text-ink-3">{{ row.industry ?? '—' }}</span>
@@ -129,7 +129,7 @@ async function archive(client) {
 
             <template #mobile="{ row }">
                 <Link :href="route('clients.show', row.id)" class="flex items-center gap-3">
-                    <Avatar :name="row.name" square size="lg" />
+                    <Avatar :name="row.name" square size="lg" decorative />
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center justify-between gap-2">
                             <p class="truncate text-body font-medium text-ink">{{ row.name }}</p>

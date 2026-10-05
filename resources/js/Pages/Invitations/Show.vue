@@ -38,7 +38,7 @@ function accept() {
         </p>
 
         <div class="mt-6 flex items-center gap-3 rounded-xl border border-line bg-surface p-4 shadow-card">
-            <Avatar :name="invitation.workspace.name" square size="lg" />
+            <Avatar :name="invitation.workspace.name" square size="lg" decorative />
             <div class="min-w-0">
                 <p class="text-body font-semibold text-ink">{{ invitation.workspace.name }}</p>
                 <p class="text-small text-ink-3">{{ invitation.workspace.industry ?? 'Workspace' }} · expires {{ formatRelative(invitation.expires_at) }}</p>

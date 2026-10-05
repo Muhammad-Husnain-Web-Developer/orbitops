@@ -32,7 +32,7 @@ function logout() {
             </button>
         </template>
         <div class="flex items-center gap-3 px-2.5 py-2">
-            <Avatar :user="page.props.auth.user" size="lg" />
+            <Avatar :user="page.props.auth.user" size="lg" decorative />
             <div class="min-w-0">
                 <p class="truncate text-body font-semibold text-ink">{{ page.props.auth.user.name }}</p>
                 <p class="truncate text-small text-ink-3">{{ page.props.auth.user.email }}</p>

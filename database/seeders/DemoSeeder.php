@@ -71,6 +71,12 @@ class DemoSeeder extends Seeder
         // Seeding should not queue a realtime broadcast for every historical activity.
         Event::fake([ActivityRecorded::class]);
 
+        // Remove stored files left behind by workspaces that no longer exist (e.g. after migrate:fresh).
+        $existing = Workspace::pluck('id')->map(fn ($id) => "workspaces/{$id}")->all();
+        collect(Storage::disk('local')->directories('workspaces'))
+            ->reject(fn ($directory) => in_array($directory, $existing, true))
+            ->each(fn ($directory) => Storage::disk('local')->deleteDirectory($directory));
+
         $this->password = Hash::make('password');
 
         $owner = $this->user('Muhammad Rahman', 'demo@orbitops.app', 'Founder & Creative Director');
@@ -846,6 +852,17 @@ class DemoSeeder extends Seeder
             'status' => $status,
             'billable' => $billable,
         ]);
+
+        // Most expenses carry a receipt; a couple of small pending ones are still missing theirs.
+        if (! in_array($vendor, ['Blue Bottle', 'Uber'], true)) {
+            $path = "workspaces/{$this->current->id()}/receipts/".Str::uuid().'.pdf';
+            Storage::disk('local')->put($path, $this->pdf("Receipt - {$vendor} - ".Money::format(round($amount, 2), 'USD')));
+            $expense->forceFill([
+                'receipt_path' => $path,
+                'receipt_name' => Str::slug($vendor).'-receipt-'.$date->format('Y-m-d').'.pdf',
+            ]);
+        }
+
         $expense->forceFill(['created_at' => $date, 'updated_at' => $date])->saveQuietly();
     }
 

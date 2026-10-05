@@ -9,6 +9,8 @@ const props = defineProps({
     src: { type: String, default: null },
     size: { type: String, default: 'md' },
     square: { type: Boolean, default: false },
+    // Set when the name is already visible next to the avatar, so it isn't announced twice.
+    decorative: { type: Boolean, default: false },
 });
 
 const sizes = {
@@ -29,9 +31,10 @@ const letters = computed(() => props.user?.initials ?? toInitials(label.value));
         class="relative inline-flex shrink-0 items-center justify-center overflow-hidden font-semibold tracking-tight select-none"
         :class="[sizes[size] ?? sizes.md, square ? 'rounded-[28%]' : 'rounded-full', image ? 'bg-subtle' : avatarTint(label)]"
         :title="label || undefined"
+        :aria-hidden="decorative || undefined"
     >
-        <img v-if="image" :src="image" :alt="label" class="size-full object-cover" loading="lazy" />
+        <img v-if="image" :src="image" :alt="decorative ? '' : label" class="size-full object-cover" loading="lazy" />
         <span v-else aria-hidden="true">{{ letters }}</span>
-        <span v-if="!image" class="sr-only">{{ label }}</span>
+        <span v-if="!image && !decorative" class="sr-only">{{ label }}</span>
     </span>
 </template>

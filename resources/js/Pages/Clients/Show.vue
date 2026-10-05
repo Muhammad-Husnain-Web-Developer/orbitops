@@ -77,7 +77,7 @@ async function archive() {
 
     <header class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div class="flex items-center gap-4">
-            <Avatar :name="client.name" square size="xl" />
+            <Avatar :name="client.name" square size="xl" decorative />
             <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-2.5">
                     <h1 class="text-h2 text-ink">{{ client.name }}</h1>
@@ -116,7 +116,7 @@ async function archive() {
         <div v-if="tab === 'overview'" class="grid gap-4 lg:grid-cols-3">
             <Card title="Contact" class="lg:col-span-1">
                 <dl class="space-y-3.5 text-body">
-                    <div class="flex items-center gap-3"><Avatar :name="client.contact_name ?? client.name" size="md" /><div><dt class="sr-only">Primary contact</dt><dd class="font-medium text-ink">{{ client.contact_name ?? 'No contact yet' }}</dd><p class="text-caption text-ink-3">Primary contact</p></div></div>
+                    <div class="flex items-center gap-3"><Avatar :name="client.contact_name ?? client.name" size="md" decorative /><div><dt class="sr-only">Primary contact</dt><dd class="font-medium text-ink">{{ client.contact_name ?? 'No contact yet' }}</dd><p class="text-caption text-ink-3">Primary contact</p></div></div>
                     <div v-if="client.email" class="flex items-center gap-3 text-ink-2"><Mail class="size-4 text-ink-3" /><dt class="sr-only">Email</dt><dd><a :href="`mailto:${client.email}`" class="hover:text-ink hover:underline">{{ client.email }}</a></dd></div>
                     <div v-if="client.phone" class="flex items-center gap-3 text-ink-2"><Phone class="size-4 text-ink-3" /><dt class="sr-only">Phone</dt><dd>{{ client.phone }}</dd></div>
                     <div v-if="client.website" class="flex items-center gap-3 text-ink-2"><Globe class="size-4 text-ink-3" /><dt class="sr-only">Website</dt><dd><a :href="client.website" target="_blank" rel="noopener noreferrer" class="hover:text-ink hover:underline">{{ client.website.replace(/^https?:\/\//, '') }}</a></dd></div>
