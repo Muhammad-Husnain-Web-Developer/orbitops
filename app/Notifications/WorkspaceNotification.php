@@ -18,6 +18,11 @@ abstract class WorkspaceNotification extends Notification implements ShouldQueue
     use Queueable;
 
     /**
+     * Skip quietly if the subject was deleted before the job ran.
+     */
+    public bool $deleteWhenMissingModels = true;
+
+    /**
      * Preference key from User::NOTIFICATION_TYPES.
      */
     abstract public function type(): string;

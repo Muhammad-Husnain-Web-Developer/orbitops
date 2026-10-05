@@ -33,6 +33,7 @@ use App\Notifications\ProjectUpdateNotification;
 use App\Notifications\TaskAssignedNotification;
 use App\Notifications\TaskCompletedNotification;
 use App\Support\CurrentWorkspace;
+use App\Support\Money;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
@@ -329,7 +330,7 @@ class DemoSeeder extends Seeder
 
         $this->seedConversation($projects, $people, $hannah, $clients);
         $this->seedTime($workspace, $people, $projects);
-        $invoices = $this->seedInvoices($clients, $projects);
+        $invoices = $this->seedInvoices($clients, $projects, $people['owner']);
         $this->seedExpenses($people, $projects);
         $this->seedFiles($workspace, $people, $projects, $clients);
         $this->seedActivity($people, $hannah, $projects, $clients, $invoices);
@@ -666,8 +667,15 @@ class DemoSeeder extends Seeder
      * @param  array<string, Project>  $projects
      * @return Collection<int, Invoice>
      */
-    protected function seedInvoices(array $clients, array $projects): Collection
+    protected function seedInvoices(array $clients, array $projects, User $owner): Collection
     {
+        // Each invoice gets the history it would have had: created, sent, reminders, payments.
+        $log = function (string $event, string $description, Invoice $invoice, CarbonInterface $at, array $properties = []) use ($owner) {
+            Activity::record($event, $description, $invoice, $properties, $owner)
+                ->forceFill(['created_at' => $at, 'updated_at' => $at])
+                ->saveQuietly();
+        };
+
         $catalogue = [
             'web' => [['Discovery & UX research', 1, 9800], ['Information architecture & wireframes', 1, 12400], ['Visual design — homepage & templates', 96, 120], ['Frontend development sprint', 120, 115]],
             'app' => [['Product discovery workshop', 1, 14500], ['UX flows & interactive prototype', 1, 18600], ['iOS & Android development sprint', 160, 125], ['QA & device testing', 60, 95]],
@@ -687,7 +695,7 @@ class DemoSeeder extends Seeder
             ['app', 4.6, [2], null], ['web', 4.1, [1], null], ['dash', 3.6, [0, 2], null],
             ['brand', 3.1, [1], null], ['app', 2.6, [2, 3], null], ['web', 2.2, [2], null],
             ['dash', 1.8, [1], 'overdue'], ['app', 1.5, [2], 'overdue'], ['brand', 1.1, [2], null],
-            ['dash', 0.9, [2], null], ['web', 0.7, [3], 'sent'], ['dash', 0.5, [0], 'sent'], ['app', 0.3, [3], 'sent'],
+            ['dash', 0.9, [2], null], ['web', 0.42, [3], 'sent'], ['dash', 0.3, [0], 'sent'], ['app', 0.2, [3], 'sent'],
             ['web', 0.1, [3], 'draft'], ['brand', 0.05, [2], 'draft'], ['shop', 4.9, [1], 'cancelled'],
         ];
 
@@ -737,7 +745,39 @@ class DemoSeeder extends Seeder
 
             $invoice->forceFill(['created_at' => $issued, 'updated_at' => $invoice->paid_at ?? $issued])->saveQuietly();
             $invoices->push($invoice);
+
+            $log('invoice.created', 'created invoice', $invoice, $issued->copy()->setTime(9, 40));
+
+            if ($invoice->sent_at) {
+                $log('invoice.sent', 'sent invoice', $invoice, $invoice->sent_at);
+            }
+
+            if ($status === InvoiceStatus::Overdue) {
+                $log('invoice.sent', 'sent a reminder for', $invoice, $due->copy()->addDays(3)->setTime(11, 5), ['to' => $invoice->client->email]);
+            }
+
+            if ($status === InvoiceStatus::Paid) {
+                $log('invoice.payment', 'recorded a '.Money::format($invoice->total, 'USD').' payment on', $invoice, $invoice->paid_at, [
+                    'amount' => (float) $invoice->total,
+                    'method' => 'bank_transfer',
+                    'reference' => 'TRX-'.mt_rand(10000, 99999),
+                    'paid_on' => $invoice->paid_at->toDateString(),
+                ]);
+                $log('invoice.paid', 'marked as paid', $invoice, $invoice->paid_at->copy()->addSecond());
+            }
         }
+
+        // One client paying in instalments, so partial payments show up in the demo.
+        $partial = $invoices->where('status', InvoiceStatus::Sent)->sortBy('issue_date')->first();
+        $deposit = round((float) $partial->total * 0.4, -2);
+        $paidOn = $partial->sent_at->copy()->addDays(5)->min(now()->subHours(6));
+        $partial->forceFill(['amount_paid' => $deposit])->saveQuietly();
+        $log('invoice.payment', 'recorded a '.Money::format($deposit, 'USD').' payment on', $partial, $paidOn, [
+            'amount' => $deposit,
+            'method' => 'card',
+            'reference' => 'Deposit',
+            'paid_on' => $paidOn->toDateString(),
+        ]);
 
         return $invoices;
     }
@@ -876,28 +916,22 @@ class DemoSeeder extends Seeder
     {
         $task = fn (string $title) => Task::where('title', $title)->first();
         $milestone = fn (string $name, Project $project) => Milestone::where('project_id', $project->id)->where('name', $name)->first();
-        $paid = $invoices->where('status', InvoiceStatus::Paid)->sortByDesc('paid_at')->values();
-        $sent = $invoices->where('status', InvoiceStatus::Sent)->sortByDesc('issue_date')->values();
-
         $events = [
             [2, 'owner', 'project.created', 'created project', $projects['portal']],
             [18, 'sarah', 'task.completed', 'completed task', $task('Homepage Design')],
             [61, $hannah, 'milestone.approved', 'approved milestone', $milestone('Wireframes', $projects['web'])],
             [95, 'priya', 'comment.created', 'commented on', $task('Build homepage sections')],
             [140, 'james', 'task.moved', 'moved to In Progress', $task('CMS content modeling'), ['to' => 'In Progress']],
-            [220, 'emma', 'invoice.sent', 'sent invoice', $sent[0]],
             [300, 'daniel', 'time.logged', 'logged 3h 20m on', $projects['dash']],
             [380, 'lucas', 'file.uploaded', 'uploaded', Attachment::where('name', 'Brand-Guidelines-v2.pdf')->first()],
             [26 * 60, 'owner', 'member.invited', 'invited Olivia Grant to the workspace', null],
             [27 * 60, 'priya', 'task.moved', 'moved to Review', $task('Wishlist screen'), ['to' => 'Review']],
-            [29 * 60, 'owner', 'invoice.paid', 'recorded a payment for', $paid[0]],
             [31 * 60, 'sarah', 'task.created', 'created task', $task('Responsive QA on tablet')],
             [2 * 1440, 'owner', 'client.created', 'added client', $clients['Harbor & Co.']],
             [2 * 1440 + 120, 'james', 'task.assigned', 'assigned Daniel to', $task('Apple Pay & Google Pay')],
             [2 * 1440 + 300, 'emma', 'milestone.completed', 'completed milestone', $milestone('Wireframes', $projects['web'])],
             [3 * 1440, 'sarah', 'file.uploaded', 'uploaded', Attachment::where('name', 'Homepage-Hero-v3.png')->first()],
             [3 * 1440 + 200, 'daniel', 'task.completed', 'completed task', $task('Product catalog API integration')],
-            [4 * 1440, 'owner', 'invoice.paid', 'recorded a payment for', $paid[1]],
             [5 * 1440, 'lucas', 'task.completed', 'completed task', $task('Colour & accessibility testing')],
             [6 * 1440, 'emma', 'project.updated', 'updated the timeline of', $projects['app']],
             [7 * 1440, 'james', 'task.completed', 'completed task', $task('Set up repository & environments')],

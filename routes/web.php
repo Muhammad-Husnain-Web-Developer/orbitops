@@ -123,6 +123,7 @@ Route::middleware(['auth', 'verified', 'workspace'])->group(function () {
         Route::post('/timer/start', [TimerController::class, 'start'])->name('timer.start');
         Route::post('/timer/stop', [TimerController::class, 'stop'])->name('timer.stop');
 
+        Route::get('/invoices/billable-time', [InvoiceController::class, 'billableTime'])->name('invoices.billable-time');
         Route::resource('invoices', InvoiceController::class);
         Route::controller(InvoiceStatusController::class)->group(function () {
             Route::post('/invoices/{invoice}/send', 'send')->name('invoices.send');

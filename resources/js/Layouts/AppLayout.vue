@@ -72,12 +72,12 @@ useHotkeys({
 </script>
 
 <template>
-    <div class="min-h-dvh bg-canvas">
+    <div class="min-h-dvh bg-canvas print:bg-white">
         <a href="#main" class="sr-only z-[80] rounded-md bg-accent px-3 py-2 text-accent-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3">Skip to content</a>
 
         <!-- Desktop sidebar -->
         <aside
-            class="fixed inset-y-0 left-0 z-40 hidden flex-col border-r border-line bg-surface/60 px-3 pt-3 pb-3 backdrop-blur-xl transition-[width] duration-300 ease-[var(--ease-out-expo)] lg:flex"
+            class="fixed inset-y-0 left-0 z-40 hidden flex-col border-r border-line bg-surface/60 px-3 pt-3 pb-3 backdrop-blur-xl transition-[width] duration-300 ease-[var(--ease-out-expo)] lg:flex print:!hidden"
             :class="collapsed ? 'w-[68px]' : 'w-[248px]'"
             aria-label="Sidebar"
         >
@@ -113,16 +113,16 @@ useHotkeys({
             </div>
         </Drawer>
 
-        <div class="transition-[padding] duration-300 ease-[var(--ease-out-expo)]" :class="collapsed ? 'lg:pl-[68px]' : 'lg:pl-[248px]'">
-            <Topbar @open-menu="mobileMenu = true" @shortcuts="shortcuts = true" />
-            <main id="main" class="mx-auto w-full max-w-[1440px] px-4 pt-6 pb-28 sm:px-6 lg:px-8 lg:pt-8 lg:pb-12" tabindex="-1">
+        <div class="transition-[padding] duration-300 ease-[var(--ease-out-expo)]" :class="collapsed ? 'lg:pl-[68px] print:pl-0' : 'lg:pl-[248px] print:pl-0'">
+            <Topbar class="print:!hidden" @open-menu="mobileMenu = true" @shortcuts="shortcuts = true" />
+            <main id="main" class="mx-auto w-full max-w-[1440px] px-4 pt-6 pb-28 sm:px-6 lg:px-8 lg:pt-8 lg:pb-12 print:max-w-none print:p-0" tabindex="-1">
                 <div :key="page.component" class="animate-page-in">
                     <slot />
                 </div>
             </main>
         </div>
 
-        <MobileNav />
+        <MobileNav class="print:!hidden" />
         <CommandPalette @shortcuts="shortcuts = true" />
         <QuickCreateHost />
         <ShortcutsDialog v-model:open="shortcuts" />

@@ -16,6 +16,11 @@ class InvoiceSentNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    /**
+     * Skip quietly if the subject was deleted before the job ran.
+     */
+    public bool $deleteWhenMissingModels = true;
+
     public function __construct(public Invoice $invoice) {}
 
     /**

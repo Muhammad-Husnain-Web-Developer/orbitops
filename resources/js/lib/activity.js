@@ -1,5 +1,8 @@
 import {
+    AlarmClock,
     ArrowRightLeft,
+    Ban,
+    Banknote,
     BadgeCheck,
     BadgeDollarSign,
     Briefcase,
@@ -33,6 +36,9 @@ const icons = {
     'invoice.created': [Plus, 'text-ink-2 bg-subtle'],
     'invoice.sent': [Send, 'text-info bg-info/10'],
     'invoice.paid': [BadgeDollarSign, 'text-success bg-success/10'],
+    'invoice.payment': [Banknote, 'text-success bg-success/10'],
+    'invoice.cancelled': [Ban, 'text-ink-3 bg-subtle'],
+    'invoice.overdue': [AlarmClock, 'text-danger bg-danger/10'],
     'file.uploaded': [Paperclip, 'text-ink-2 bg-subtle'],
     'time.logged': [Clock, 'text-ink-2 bg-subtle'],
     'member.invited': [MailPlus, 'text-info bg-info/10'],

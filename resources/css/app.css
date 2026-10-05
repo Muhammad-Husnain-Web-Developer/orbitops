@@ -336,9 +336,49 @@
     padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
 
-/* Print: invoices render as clean documents. */
+/*
+ * Paper: documents such as invoices always render on light paper, in either
+ * theme, so what people see on screen matches what prints and what clients get.
+ */
+.paper {
+    color-scheme: light;
+    --canvas: #f6f6f8;
+    --surface: #ffffff;
+    --subtle: #f2f2f5;
+    --hover: #f3f3f6;
+    --line: #e6e6eb;
+    --line-strong: #d5d5dd;
+    --ink: #0b0b12;
+    --ink-2: #4a4a57;
+    --ink-3: #6f6f7c;
+    --success: #15803d;
+    --warning: #b45309;
+    --danger: #dc2626;
+    --info: #2563eb;
+    --ring-highlight: transparent;
+    background: var(--surface);
+    color: var(--ink);
+}
+
+/* Print: only the document, edge to edge, in true colours. */
 @media print {
+    @page {
+        margin: 14mm 12mm;
+    }
+
+    html,
     body {
         background: white !important;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .paper {
+        border: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
     }
 }
