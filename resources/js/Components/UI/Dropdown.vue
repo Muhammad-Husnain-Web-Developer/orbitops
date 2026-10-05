@@ -1,5 +1,6 @@
 <script setup>
-import { nextTick, onBeforeUnmount, provide, ref, useId } from 'vue';
+import { provide, ref, useId } from 'vue';
+import { useFloating } from '@/composables/useFloating';
 
 const props = defineProps({
     align: { type: String, default: 'start' },
@@ -12,47 +13,18 @@ const emit = defineEmits(['open', 'close']);
 const open = ref(false);
 const trigger = ref(null);
 const menu = ref(null);
-const position = ref({ top: 0, left: 0, placement: 'bottom' });
 const id = useId();
+
+const { position, attach, detach } = useFloating(trigger, menu, { align: props.align, onDismiss: () => close(false) });
 
 function items() {
     return [...(menu.value?.querySelectorAll('[role="menuitem"]:not([aria-disabled="true"])') ?? [])];
 }
 
-function place() {
-    const anchor = trigger.value?.firstElementChild ?? trigger.value;
-    if (!anchor || !menu.value) return;
-
-    const rect = anchor.getBoundingClientRect();
-    const menuRect = menu.value.getBoundingClientRect();
-    const gap = 6;
-    const below = window.innerHeight - rect.bottom;
-    const placement = below < menuRect.height + 16 && rect.top > menuRect.height + 16 ? 'top' : 'bottom';
-
-    let left = props.align === 'end' ? rect.right - menuRect.width : rect.left;
-    left = Math.min(Math.max(8, left), window.innerWidth - menuRect.width - 8);
-
-    position.value = {
-        top: placement === 'bottom' ? rect.bottom + gap : rect.top - menuRect.height - gap,
-        left,
-        placement,
-    };
-}
-
-function onOutside(event) {
-    if (!menu.value?.contains(event.target) && !trigger.value?.contains(event.target)) {
-        close(false);
-    }
-}
-
 async function show(focusFirst = false) {
     open.value = true;
     emit('open');
-    await nextTick();
-    place();
-    document.addEventListener('pointerdown', onOutside, true);
-    window.addEventListener('resize', place);
-    window.addEventListener('scroll', place, true);
+    await attach();
 
     if (focusFirst) {
         items()[0]?.focus();
@@ -66,9 +38,7 @@ function close(restoreFocus = true) {
 
     open.value = false;
     emit('close');
-    document.removeEventListener('pointerdown', onOutside, true);
-    window.removeEventListener('resize', place);
-    window.removeEventListener('scroll', place, true);
+    detach();
 
     if (restoreFocus) {
         (trigger.value?.querySelector('button, a, [tabindex]') ?? trigger.value)?.focus({ preventScroll: true });
@@ -119,8 +89,6 @@ function onTriggerKeydown(event) {
 }
 
 provide('dropdown', { close });
-
-onBeforeUnmount(() => close(false));
 
 defineExpose({ show, close });
 </script>

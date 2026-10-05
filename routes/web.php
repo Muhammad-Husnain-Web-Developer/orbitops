@@ -13,6 +13,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\InvoiceStatusController;
+use App\Http\Controllers\LookupController;
 use App\Http\Controllers\MarketingController;
 use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\NotificationController;
@@ -97,6 +98,7 @@ Route::middleware(['auth', 'verified', 'workspace'])->group(function () {
     Route::middleware('team')->group(function () {
         Route::get('/dashboard', DashboardController::class)->name('dashboard');
         Route::get('/search', SearchController::class)->middleware('throttle:search')->name('search');
+        Route::get('/lookups', LookupController::class)->name('lookups');
 
         Route::resource('clients', ClientController::class)->except(['create', 'edit']);
         Route::post('/clients/{client}/notes', [ClientNoteController::class, 'store'])->name('clients.notes.store');

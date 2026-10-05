@@ -53,7 +53,9 @@ onMounted(() => requestAnimationFrame(() => (drawn.value = true)));
 </script>
 
 <template>
-    <figure class="flex flex-col items-center gap-5 sm:flex-row sm:items-center sm:gap-6">
+    <!-- Layout follows the chart's container, not the viewport, so it works in narrow cards. -->
+    <figure class="@container">
+        <div class="flex flex-col items-center gap-5 @sm:flex-row @sm:gap-6">
         <div class="relative shrink-0" :style="{ width: `${size}px`, height: `${size}px` }">
             <svg :width="size" :height="size" class="-rotate-90" role="img" :aria-label="title">
                 <circle :cx="size / 2" :cy="size / 2" :r="radius" fill="none" stroke="var(--subtle)" :stroke-width="STROKE" />
@@ -98,5 +100,6 @@ onMounted(() => requestAnimationFrame(() => (drawn.value = true)));
                 <span class="w-10 text-right text-caption text-ink-3 tabular">{{ arc.percent.toFixed(0) }}%</span>
             </li>
         </ul>
+        </div>
     </figure>
 </template>

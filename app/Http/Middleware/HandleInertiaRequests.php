@@ -10,6 +10,10 @@ use App\Enums\ProjectStatus;
 use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
 use App\Enums\WorkspaceRole;
+use App\Http\Resources\TimeEntryResource;
+use App\Models\Invoice;
+use App\Models\Task;
+use App\Models\TimeEntry;
 use App\Models\User;
 use App\Support\CurrentWorkspace;
 use App\Support\NotificationFeed;
@@ -87,6 +91,11 @@ class HandleInertiaRequests extends Middleware
             'notifications' => fn () => $user && $current->check() ? [
                 'unread' => NotificationFeed::query($user, $current->id())->whereNull('read_at')->count(),
             ] : null,
+            'timer' => fn () => $this->isTeamMember($user, $current) ? $this->runningTimer($user) : null,
+            'counts' => fn () => $this->isTeamMember($user, $current) ? [
+                'my_tasks' => Task::open()->where('assignee_id', $user->id)->count(),
+                'overdue_invoices' => $user->can('invoices.view') ? Invoice::where('status', 'overdue')->count() : 0,
+            ] : null,
         ];
     }
 
@@ -109,6 +118,21 @@ class HandleInertiaRequests extends Middleware
                 'role' => WorkspaceRole::options(),
             ],
         ];
+    }
+
+    protected function isTeamMember(?User $user, CurrentWorkspace $current): bool
+    {
+        return $user !== null && $current->check() && ! $user->membershipFor($current->id())?->isClient();
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    protected function runningTimer(User $user): ?array
+    {
+        $entry = TimeEntry::running()->where('user_id', $user->id)->with(['project:id,name,color', 'task:id,title'])->first();
+
+        return $entry ? (new TimeEntryResource($entry))->resolve() : null;
     }
 
     /**

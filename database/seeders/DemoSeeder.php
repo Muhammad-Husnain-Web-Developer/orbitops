@@ -686,8 +686,8 @@ class DemoSeeder extends Seeder
             ['app', 6.1, [1], null], ['web', 5.7, [0], null], ['dash', 5.2, [0], null],
             ['app', 4.6, [2], null], ['web', 4.1, [1], null], ['dash', 3.6, [0, 2], null],
             ['brand', 3.1, [1], null], ['app', 2.6, [2, 3], null], ['web', 2.2, [2], null],
-            ['dash', 1.8, [1], 'overdue'], ['app', 1.5, [2], 'overdue'], ['brand', 1.1, [2], 'sent'],
-            ['web', 0.7, [3], 'sent'], ['dash', 0.5, [0], 'sent'], ['app', 0.3, [3], 'sent'],
+            ['dash', 1.8, [1], 'overdue'], ['app', 1.5, [2], 'overdue'], ['brand', 1.1, [2], null],
+            ['dash', 0.9, [2], null], ['web', 0.7, [3], 'sent'], ['dash', 0.5, [0], 'sent'], ['app', 0.3, [3], 'sent'],
             ['web', 0.1, [3], 'draft'], ['brand', 0.05, [2], 'draft'], ['shop', 4.9, [1], 'cancelled'],
         ];
 

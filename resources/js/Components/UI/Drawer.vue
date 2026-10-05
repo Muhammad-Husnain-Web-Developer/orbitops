@@ -9,6 +9,7 @@ defineProps({
     title: { type: String, default: null },
     description: { type: String, default: null },
     width: { type: String, default: 'max-w-xl' },
+    side: { type: String, default: 'right' },
 });
 
 const emit = defineEmits(['close']);
@@ -31,9 +32,9 @@ useDialog(open, panel, { onClose: close });
         </Transition>
         <Transition
             enter-active-class="duration-300 ease-[var(--ease-out-expo)]"
-            enter-from-class="translate-x-full"
+            :enter-from-class="side === 'left' ? '-translate-x-full' : 'translate-x-full'"
             leave-active-class="duration-200 ease-in"
-            leave-to-class="translate-x-full"
+            :leave-to-class="side === 'left' ? '-translate-x-full' : 'translate-x-full'"
         >
             <div
                 v-if="open"
@@ -42,10 +43,10 @@ useDialog(open, panel, { onClose: close });
                 aria-modal="true"
                 :aria-labelledby="title ? `${id}-title` : undefined"
                 tabindex="-1"
-                class="fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-line bg-elevated shadow-overlay outline-none"
-                :class="width"
+                class="fixed inset-y-0 z-50 flex w-full flex-col border-line bg-elevated shadow-overlay outline-none"
+                :class="[width, side === 'left' ? 'left-0 border-r' : 'right-0 border-l']"
             >
-                <header class="flex items-start justify-between gap-4 border-b border-line px-5 py-4 sm:px-6">
+                <header v-if="title || $slots.header" class="flex items-start justify-between gap-4 border-b border-line px-5 py-4 sm:px-6">
                     <slot name="header">
                         <div class="min-w-0">
                             <h2 :id="`${id}-title`" class="text-h3 text-ink">{{ title }}</h2>

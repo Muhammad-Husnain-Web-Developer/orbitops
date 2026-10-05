@@ -16,6 +16,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Blended hourly rate
+    |--------------------------------------------------------------------------
+    |
+    | Used to value tracked time on projects without their own hourly rate
+    | when estimating budget burn in reports.
+    |
+    */
+
+    'blended_rate' => (float) env('ORBITOPS_BLENDED_RATE', 115),
+
+    /*
+    |--------------------------------------------------------------------------
     | Social links
     |--------------------------------------------------------------------------
     |
