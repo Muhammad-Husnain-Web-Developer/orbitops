@@ -7,6 +7,7 @@ import BarChart from '@/Components/Charts/BarChart.vue';
 import DonutChart from '@/Components/Charts/DonutChart.vue';
 import ActivityFeed from '@/Components/Dashboard/ActivityFeed.vue';
 import ProjectCard from '@/Components/Projects/ProjectCard.vue';
+import Button from '@/Components/UI/Button.vue';
 import Card from '@/Components/UI/Card.vue';
 import EmptyState from '@/Components/UI/EmptyState.vue';
 import PageHeader from '@/Components/UI/PageHeader.vue';
@@ -59,6 +60,10 @@ const quickActions = [
 const money = (value) => formatMoney(value, currency.value, { decimals: 0 });
 const compactMoney = (value) => formatMoney(value, currency.value, { compact: true });
 const hours = (value) => `${formatNumber(value, { decimals: 1 })}h`;
+
+// Brand-new workspaces get a helpful empty state instead of flat zero lines.
+const hasMoney = computed(() => [...(props.charts?.revenue ?? []), ...(props.charts?.expenses ?? [])].some((value) => value > 0));
+const hasHours = computed(() => [...(props.charts?.hours?.billable ?? []), ...(props.charts?.hours?.other ?? [])].some((value) => value > 0));
 
 // Live activity: prepend new entries pushed over the workspace channel.
 const liveActivity = ref([]);
@@ -123,6 +128,15 @@ useRealtime(() => (can('expenses.view') ? `workspace.${page.props.workspace.id}.
                 <Skeleton class="h-3 w-40" />
                 <Skeleton class="h-[240px] w-full rounded-lg" />
             </div>
+            <EmptyState
+                v-else-if="!hasMoney"
+                :icon="TrendingUp"
+                title="No revenue or spend yet"
+                description="Paid invoices and recorded expenses will chart here month by month."
+                compact
+            >
+                <Button v-if="can('invoices.manage')" size="sm" :href="route('invoices.create')">Create an invoice</Button>
+            </EmptyState>
             <AreaChart
                 v-else
                 title="Revenue and expenses by month"
@@ -141,6 +155,9 @@ useRealtime(() => (can('expenses.view') ? `workspace.${page.props.workspace.id}.
                 <Skeleton class="h-3 w-32" />
                 <Skeleton class="h-[240px] w-full rounded-lg" />
             </div>
+            <EmptyState v-else-if="!hasHours" :icon="Clock" title="No time tracked yet" description="Start a timer from any task or log time manually." compact>
+                <Button v-if="can('time.track')" size="sm" variant="secondary" @click="openQuickCreate('time')">Log time</Button>
+            </EmptyState>
             <BarChart
                 v-else
                 title="Hours tracked per week"

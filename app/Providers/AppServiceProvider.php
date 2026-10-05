@@ -18,6 +18,7 @@ use App\Support\CurrentWorkspace;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Foundation\DevCommands;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\RateLimiter;
@@ -40,6 +41,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // `composer dev` also runs the scheduler, so overdue invoices get flagged locally.
+        DevCommands::artisan('schedule:work', 'scheduler');
+
         Relation::enforceMorphMap([
             'user' => User::class,
             'workspace' => Workspace::class,

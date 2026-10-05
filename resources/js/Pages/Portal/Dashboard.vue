@@ -62,18 +62,18 @@ const dueText = (date) => {
         <span class="hidden items-center gap-1 text-small font-medium text-accent-text sm:flex">Review <ArrowRight class="size-4 transition-transform group-hover:translate-x-0.5" /></span>
     </Link>
 
-    <dl class="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <div class="rounded-xl border border-line bg-surface p-4 shadow-card">
-            <dt class="flex items-center gap-2 text-small text-ink-3"><FolderKanban class="size-4" />Active projects</dt>
-            <dd class="mt-1.5 text-h2 text-ink tabular">{{ projects.length }}</dd>
+    <dl class="mb-8 grid grid-cols-3 gap-2 sm:gap-3">
+        <div class="rounded-xl border border-line bg-surface p-3 shadow-card sm:p-4">
+            <dt class="flex items-center gap-2 text-caption text-ink-3 sm:text-small"><FolderKanban class="size-4 shrink-0 max-sm:hidden" />Active projects</dt>
+            <dd class="mt-1.5 text-h3 text-ink tabular sm:text-h2">{{ projects.length }}</dd>
         </div>
-        <div class="rounded-xl border border-line bg-surface p-4 shadow-card">
-            <dt class="flex items-center gap-2 text-small text-ink-3"><Wallet class="size-4" />Balance due</dt>
-            <dd class="mt-1.5 text-h2 tabular" :class="balance > 0 ? 'text-ink' : 'text-success'">{{ formatMoney(balance, currency) }}</dd>
+        <div class="rounded-xl border border-line bg-surface p-3 shadow-card sm:p-4">
+            <dt class="flex items-center gap-2 text-caption text-ink-3 sm:text-small"><Wallet class="size-4 shrink-0 max-sm:hidden" />Balance due</dt>
+            <dd class="mt-1.5 text-h3 tabular sm:text-h2" :class="balance > 0 ? 'text-ink' : 'text-success'">{{ formatMoney(balance, currency, { decimals: 0 }) }}</dd>
         </div>
-        <div class="rounded-xl border border-line bg-surface p-4 shadow-card">
-            <dt class="flex items-center gap-2 text-small text-ink-3"><CheckCircle2 class="size-4" />Awaiting your review</dt>
-            <dd class="mt-1.5 text-h2 text-ink tabular">{{ approvals.length }}</dd>
+        <div class="rounded-xl border border-line bg-surface p-3 shadow-card sm:p-4">
+            <dt class="flex items-center gap-2 text-caption text-ink-3 sm:text-small"><CheckCircle2 class="size-4 shrink-0 max-sm:hidden" />Awaiting review</dt>
+            <dd class="mt-1.5 text-h3 text-ink tabular sm:text-h2">{{ approvals.length }}</dd>
         </div>
     </dl>
 

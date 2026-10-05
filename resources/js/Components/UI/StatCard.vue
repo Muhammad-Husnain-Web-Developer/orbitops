@@ -58,7 +58,7 @@ const good = computed(() => (props.delta ?? 0) === 0 || (props.delta > 0) === pr
         <template v-else>
             <div class="mt-3 flex items-end justify-between gap-3">
                 <p class="text-[1.625rem] leading-none font-semibold tracking-[-0.03em] text-ink sm:text-[1.75rem]">{{ display }}</p>
-                <Sparkline v-if="trend?.length" :values="trend" class="mb-0.5 hidden shrink-0 sm:block" />
+                <Sparkline v-if="trend?.some((value) => value > 0)" :values="trend" class="mb-0.5 hidden shrink-0 sm:block" />
             </div>
             <p class="mt-2.5 flex items-center gap-1.5 text-caption text-ink-3">
                 <span
