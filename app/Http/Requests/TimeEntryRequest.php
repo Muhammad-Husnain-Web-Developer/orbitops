@@ -27,7 +27,7 @@ class TimeEntryRequest extends FormRequest
     {
         return [
             'project_id' => ['required', $this->inWorkspace('projects')],
-            'task_id' => ['nullable', $this->inWorkspace('tasks')],
+            'task_id' => ['nullable', $this->inWorkspace('tasks')->where('project_id', $this->integer('project_id'))],
             'description' => ['nullable', 'string', 'max:190'],
             'date' => ['required', 'date', 'before_or_equal:today'],
             'start' => ['required', 'date_format:H:i'],

@@ -70,6 +70,7 @@ const dateStyles = {
     weekday: { weekday: 'short' },
     time: { hour: 'numeric', minute: '2-digit' },
     datetime: { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' },
+    day: { weekday: 'long', month: 'short', day: 'numeric' },
 };
 
 export function formatDate(value, style = 'medium') {

@@ -9,6 +9,7 @@ import Select from '@/Components/UI/Select.vue';
 import Skeleton from '@/Components/UI/Skeleton.vue';
 import Switch from '@/Components/UI/Switch.vue';
 import { useLookups } from '@/composables/useLookups';
+import { useProjectTasks } from '@/composables/useProjectTasks';
 import { formatDuration, toDate, toDateInput } from '@/lib/format';
 
 const open = defineModel('open', { type: Boolean, default: false });
@@ -27,7 +28,7 @@ const timeOf = (iso) => {
     return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
-const blank = () => ({ project_id: '', description: '', date: toDateInput(), start: '09:00', end: '10:00', billable: true });
+const blank = () => ({ project_id: '', task_id: '', description: '', date: toDateInput(), start: '09:00', end: '10:00', billable: true });
 const form = useForm(blank());
 
 watch(open, (value) => {
@@ -38,6 +39,7 @@ watch(open, (value) => {
     if (props.entry) {
         form.defaults({
             project_id: props.entry.project_id,
+            task_id: props.entry.task_id ?? '',
             description: props.entry.description ?? '',
             date: toDateInput(props.entry.started_at),
             start: timeOf(props.entry.started_at),
@@ -59,6 +61,9 @@ const duration = computed(() => {
     return minutes > 0 ? formatDuration(minutes * 60) : null;
 });
 
+const { tasks, loading: tasksLoading } = useProjectTasks(() => form.project_id);
+const taskOptions = computed(() => tasks.value.map((task) => ({ value: task.id, label: task.done ? `${task.title} (done)` : task.title })));
+
 const projectOptions = computed(() => lookups.projects.map((project) => ({ value: project.id, label: project.client ? `${project.name} · ${project.client}` : project.name })));
 
 function submit() {
@@ -72,7 +77,10 @@ function submit() {
         <form id="time-form" class="grid gap-4 sm:grid-cols-6" novalidate @submit.prevent="submit">
             <Field label="Project" :error="form.errors.project_id" required class="sm:col-span-6" v-slot="{ id, invalid }">
                 <Skeleton v-if="!lookups.loaded" class="h-9" />
-                <Select v-else :id="id" v-model="form.project_id" :options="projectOptions" placeholder="Choose a project…" :invalid="invalid" />
+                <Select v-else :id="id" v-model="form.project_id" :options="projectOptions" placeholder="Choose a project…" :invalid="invalid" @update:model-value="form.task_id = ''" />
+            </Field>
+            <Field label="Task" :error="form.errors.task_id" hint="Optional" class="sm:col-span-6" v-slot="{ id, invalid }">
+                <Select :id="id" v-model="form.task_id" :options="taskOptions" :placeholder="!form.project_id ? 'Choose a project first' : tasksLoading ? 'Loading tasks…' : 'No specific task'" :disabled="!form.project_id" :invalid="invalid" />
             </Field>
             <Field label="What did you work on?" :error="form.errors.description" class="sm:col-span-6" v-slot="{ id, invalid }">
                 <Input :id="id" v-model="form.description" :invalid="invalid" placeholder="Homepage build" />

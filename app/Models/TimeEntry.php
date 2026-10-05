@@ -83,6 +83,20 @@ class TimeEntry extends Model
         return $this->ended_at === null;
     }
 
+    /**
+     * Human duration for toasts and the timeline, e.g. "1h 25m".
+     */
+    public function durationLabel(): string
+    {
+        $minutes = intdiv((int) $this->duration_seconds, 60);
+
+        if ($minutes < 60) {
+            return max(1, $minutes).'m';
+        }
+
+        return trim(intdiv($minutes, 60).'h '.($minutes % 60 ? ($minutes % 60).'m' : ''));
+    }
+
     public function stop(): void
     {
         $this->ended_at = now();

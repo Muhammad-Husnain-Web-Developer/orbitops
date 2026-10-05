@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ProjectStatus;
+use App\Enums\TaskStatus;
 use App\Models\Client;
 use App\Models\Project;
+use App\Models\Task;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -17,6 +19,20 @@ class LookupController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         $user = $request->user();
+
+        // Tasks of one project, for the timer and time entry forms.
+        if ($request->filled('project')) {
+            return response()->json([
+                'tasks' => $user->can('tasks.view')
+                    ? Task::where('project_id', $request->integer('project'))
+                        ->orderByRaw('status = ? asc', [TaskStatus::Done->value])
+                        ->orderBy('number')
+                        ->limit(200)
+                        ->get(['id', 'title', 'number', 'status', 'project_id'])
+                        ->map(fn (Task $task) => ['id' => $task->id, 'title' => $task->title, 'done' => $task->status === TaskStatus::Done])
+                    : [],
+            ]);
+        }
 
         return response()->json([
             'clients' => $user->can('clients.view')
