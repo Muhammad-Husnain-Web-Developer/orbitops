@@ -39,6 +39,7 @@ class CreateNewUser implements CreatesNewUsers
                 Rule::unique(User::class),
             ],
             'workspace' => [$invited ? 'nullable' : 'required', 'string', 'min:2', 'max:80'],
+            'plan' => ['nullable', Rule::in(array_keys(config('orbitops.plans')))],
             'password' => $this->passwordRules(),
             'terms' => ['accepted'],
         ], [
@@ -54,7 +55,10 @@ class CreateNewUser implements CreatesNewUsers
             ]);
 
             if (! $invited) {
-                $this->createWorkspace->handle($user, ['name' => $input['workspace']]);
+                $this->createWorkspace->handle($user, [
+                    'name' => $input['workspace'],
+                    'plan' => $input['plan'] ?? 'starter',
+                ]);
             }
 
             return $user;
