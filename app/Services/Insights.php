@@ -135,8 +135,8 @@ class Insights
      */
     public function utilization(Workspace $workspace, CarbonInterface $from, CarbonInterface $to): array
     {
-        $weeks = max(1, $from->diffInDays($to) / 7);
-        $capacity = (float) $workspace->memberships()->whereNull('client_id')->where('status', 'active')->sum('weekly_capacity') * $weeks;
+        $capacity = (float) $workspace->memberships()->whereNull('client_id')->where('status', 'active')->get(['weekly_capacity', 'joined_at'])
+            ->sum(fn ($membership) => $this->capacity($membership->weekly_capacity, $membership->joined_at, $from, $to));
         $tracked = $this->trackedSeconds($from, $to) / 3600;
 
         return [
@@ -153,18 +153,16 @@ class Insights
      */
     public function utilizationByMember(Workspace $workspace, CarbonInterface $from, CarbonInterface $to): Collection
     {
-        $weeks = max(1, $from->diffInDays($to) / 7);
-
         $seconds = TimeEntry::query()->completed()->whereBetween('started_at', [$from, $to])
             ->selectRaw('user_id, SUM(duration_seconds) as total, SUM(CASE WHEN billable THEN duration_seconds ELSE 0 END) as billable')
             ->groupBy('user_id')
             ->get()
             ->keyBy('user_id');
 
-        return $workspace->teamMembers()->get()->map(function ($member) use ($seconds, $weeks) {
+        return $workspace->teamMembers()->get()->map(function ($member) use ($seconds, $from, $to) {
             $row = $seconds->get($member->id);
             $hours = ($row->total ?? 0) / 3600;
-            $capacity = $member->pivot->weekly_capacity * $weeks;
+            $capacity = $this->capacity($member->pivot->weekly_capacity, $member->pivot->joined_at, $from, $to);
 
             return [
                 'id' => $member->id,
@@ -247,10 +245,22 @@ class Insights
         ];
     }
 
+    /**
+     * Available hours for one person in a window, counting only the time since they joined.
+     */
+    public function capacity(int|float $weeklyCapacity, mixed $joinedAt, CarbonInterface $from, CarbonInterface $to): float
+    {
+        $start = $joinedAt ? CarbonImmutable::parse($joinedAt)->max($from) : CarbonImmutable::parse($from);
+        $days = $start->lt($to) ? $start->diffInDays($to) : 0;
+
+        return (float) $weeklyCapacity * max(0, $days) / 7;
+    }
+
     public function percentChange(float $current, float $previous): ?float
     {
+        // No baseline means no meaningful comparison (0 → anything is not "+100%").
         if ($previous == 0.0) {
-            return $current > 0 ? 100.0 : null;
+            return null;
         }
 
         return round(($current - $previous) / $previous * 100, 1);

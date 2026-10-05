@@ -34,7 +34,8 @@ class FileController extends Controller
         $files = Attachment::query()
             ->with(['uploader', 'project:id,name,color', 'client:id,name'])
             ->when($filters['search'], fn ($query, $search) => $query->where('name', 'like', "%{$search}%"))
-            ->when($filters['project'], fn ($query, $project) => $query->where('project_id', $project))
+            ->when($filters['project'] === 'none', fn ($query) => $query->whereNull('project_id'))
+            ->when(is_numeric($filters['project']), fn ($query) => $query->where('project_id', $filters['project']))
             ->latest()
             ->get()
             ->when($filters['kind'], fn ($files, $kind) => $files->filter(fn ($file) => $file->kind() === $kind)->values());
@@ -42,7 +43,8 @@ class FileController extends Controller
         return inertia('Files/Index', [
             'files' => AttachmentResource::collection($files),
             'filters' => $filters,
-            'projects' => fn () => Project::orderBy('name')->get(['id', 'name', 'color']),
+            'projects' => fn () => Project::orderBy('name')->withCount('attachments')->get(['id', 'name', 'color']),
+            'unfiled' => fn () => Attachment::whereNull('project_id')->count(),
             'usage' => fn () => [
                 'bytes' => (int) Attachment::sum('size'),
                 'count' => Attachment::count(),

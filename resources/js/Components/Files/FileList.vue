@@ -56,8 +56,8 @@ async function remove(file) {
                     </template>
                 </p>
             </div>
-            <Badge v-if="file.visible_to_client" tone="warning" size="sm" class="hidden sm:inline-flex">Shared with client</Badge>
-            <Avatar v-if="file.uploader" :user="file.uploader" size="sm" class="hidden sm:inline-flex" />
+            <Badge v-if="file.visible_to_client" tone="warning" size="sm" class="max-sm:hidden">Shared with client</Badge>
+            <Avatar v-if="file.uploader" :user="file.uploader" size="sm" class="max-sm:hidden" />
             <Dropdown align="end" label="File actions">
                 <template #trigger="{ attrs }">
                     <button type="button" v-bind="attrs" class="rounded-md p-1.5 text-ink-3 hover:bg-hover hover:text-ink" :aria-label="`Actions for ${file.name}`"><MoreHorizontal class="size-4" /></button>

@@ -28,6 +28,7 @@ use App\Http\Controllers\Portal\PortalTaskController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectMessageController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReportExportController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Settings\ApiTokenController;
 use App\Http\Controllers\Settings\AppearanceController;
@@ -146,6 +147,7 @@ Route::middleware(['auth', 'verified', 'workspace'])->group(function () {
         Route::get('/files/{attachment}/download', [FileController::class, 'download'])->name('files.download');
 
         Route::get('/reports', ReportController::class)->name('reports');
+        Route::get('/reports/export', ReportExportController::class)->name('reports.export');
         Route::get('/activity', ActivityController::class)->name('activity');
 
         Route::get('/team', [TeamController::class, 'index'])->name('team.index');

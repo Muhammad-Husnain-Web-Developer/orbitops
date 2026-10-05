@@ -37,6 +37,9 @@ const display = computed(() => {
     }
 });
 
+// Changes on a tiny base are huge but meaningless; cap what we print.
+const deltaText = computed(() => (Math.abs(props.delta) >= 1000 ? '>999%' : `${Math.abs(props.delta).toFixed(props.delta % 1 === 0 ? 0 : 1)}%`));
+
 const good = computed(() => (props.delta ?? 0) === 0 || (props.delta > 0) === props.upIsGood);
 </script>
 
@@ -64,10 +67,10 @@ const good = computed(() => (props.delta ?? 0) === 0 || (props.delta > 0) === pr
                     :class="good ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'"
                 >
                     <component :is="delta >= 0 ? ArrowUpRight : ArrowDownRight" class="size-3" aria-hidden="true" />
-                    {{ Math.abs(delta).toFixed(delta % 1 === 0 ? 0 : 1) }}%
+                    {{ deltaText }}
                     <span class="sr-only">{{ delta >= 0 ? 'increase' : 'decrease' }}</span>
                 </span>
-                <span>{{ hint ?? deltaLabel }}</span>
+                <span>{{ hint ?? (delta !== null ? deltaLabel : 'No earlier period to compare') }}</span>
             </p>
         </template>
     </div>

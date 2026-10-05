@@ -85,7 +85,7 @@ function parts(body) {
         </ol>
 
         <form v-if="action" class="mt-5 flex gap-3" @submit.prevent="submit">
-            <Avatar :user="page.props.auth.user" size="md" class="hidden shrink-0 sm:inline-flex" />
+            <Avatar :user="page.props.auth.user" size="md" class="shrink-0 max-sm:hidden" />
             <div class="flex-1">
                 <Textarea
                     v-model="form.body"

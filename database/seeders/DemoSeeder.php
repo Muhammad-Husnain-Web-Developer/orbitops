@@ -136,13 +136,16 @@ class DemoSeeder extends Seeder
      */
     protected function seedAcme(Workspace $workspace, User $owner, array $team): void
     {
-        $this->addMember->handle($workspace, $owner, WorkspaceRole::Owner, attributes: ['title' => $owner->title, 'joined_at' => now()->subYears(2)]);
+        // The founder runs the studio, so only part of their week is available for project work.
+        $this->addMember->handle($workspace, $owner, WorkspaceRole::Owner, attributes: ['title' => $owner->title, 'joined_at' => now()->subYears(2), 'weekly_capacity' => 20]);
 
         $roles = ['sarah' => WorkspaceRole::Admin, 'james' => WorkspaceRole::Manager, 'emma' => WorkspaceRole::Manager, 'priya' => WorkspaceRole::Member, 'lucas' => WorkspaceRole::Member, 'daniel' => WorkspaceRole::Member];
+        // A studio that grew over the last two years; join dates prorate utilization capacity.
+        $joinedDaysAgo = ['sarah' => 600, 'james' => 430, 'emma' => 260, 'lucas' => 200, 'priya' => 150, 'daniel' => 115];
         foreach ($roles as $key => $role) {
             $this->addMember->handle($workspace, $team[$key], $role, attributes: [
                 'title' => $team[$key]->title,
-                'joined_at' => now()->subMonths(mt_rand(4, 20)),
+                'joined_at' => now()->subDays($joinedDaysAgo[$key]),
                 'last_active_at' => now()->subMinutes(mt_rand(3, 60 * 30)),
                 'weekly_capacity' => $key === 'emma' ? 32 : 40,
             ]);
@@ -333,6 +336,21 @@ class DemoSeeder extends Seeder
             ['Interactive microsite', 'done', 0, 'high', 'priya'],
             ['Print-ready PDF', 'done', 0, 'medium', 'lucas'],
         ], completedDaysAgo: 118);
+
+        $projects['cafe'] = $this->createProject($clients['Fieldnote Coffee'], $people['sarah'], [
+            'name' => 'Brand & Storefront', 'code' => 'FNC', 'color' => 'amber', 'status' => ProjectStatus::Completed, 'priority' => 'medium',
+            'billing_type' => 'fixed', 'budget' => 96000, 'start' => 182, 'due' => 100,
+            'description' => 'Brand refresh, packaging system and a Shopify storefront for a specialty coffee roaster.',
+        ], [$people['james'], $people['emma'], $people['priya'], $people['daniel']], [
+            ['Brand refresh', 'completed', 150, true, 'approved'],
+            ['Storefront launch', 'completed', 102, true, 'approved'],
+        ], [
+            ['Brand workshop', 'done', 0, 'high', 'sarah'],
+            ['Packaging system', 'done', 0, 'medium', 'sarah'],
+            ['Shopify theme build', 'done', 1, 'high', 'priya'],
+            ['Subscription checkout', 'done', 1, 'high', 'daniel'],
+            ['Launch QA', 'done', 1, 'medium', 'james'],
+        ], completedDaysAgo: 100);
 
         $this->seedConversation($projects, $people, $hannah, $clients);
         $this->seedTime($workspace, $people, $projects);
@@ -563,12 +581,12 @@ class DemoSeeder extends Seeder
     {
         $assignments = [
             'owner' => ['portal', 'web', 'brand'],
-            'sarah' => ['web', 'app', 'brand', 'dash'],
-            'james' => ['app', 'web', 'dash', 'shop'],
-            'emma' => ['web', 'launch', 'app'],
-            'priya' => ['web', 'app', 'dash', 'launch'],
+            'sarah' => ['web', 'app', 'brand', 'dash', 'cafe'],
+            'james' => ['app', 'web', 'dash', 'shop', 'cafe'],
+            'emma' => ['web', 'launch', 'app', 'cafe'],
+            'priya' => ['web', 'app', 'dash', 'launch', 'cafe'],
             'lucas' => ['brand', 'launch', 'web', 'report'],
-            'daniel' => ['dash', 'app', 'shop'],
+            'daniel' => ['dash', 'app', 'shop', 'cafe'],
         ];
 
         $descriptions = [
@@ -580,23 +598,40 @@ class DemoSeeder extends Seeder
             'shop' => ['Migration planning', 'Platform research'],
             'launch' => ['Motion teaser', 'Landing page', 'Press kit'],
             'report' => ['Data visualisation', 'Print layout'],
+            'cafe' => ['Brand workshop', 'Packaging design', 'Shopify theme build', 'Subscription checkout', 'Launch QA'],
         ];
 
+        // Hour ceilings keep each project's budget burn believable across the whole history.
+        $caps = ['web' => 660, 'app' => 620, 'dash' => 200, 'brand' => 200, 'launch' => 360, 'report' => 230, 'shop' => 330, 'portal' => 6, 'cafe' => 760];
+        $logged = array_fill_keys(array_keys($caps), 0.0);
+
         $tasksByProject = Task::get(['id', 'project_id', 'title'])->groupBy('project_id');
+        $joined = DB::table('memberships')->where('workspace_id', $workspace->id)->pluck('joined_at', 'user_id');
         $rows = [];
 
-        foreach ($assignments as $key => $projectKeys) {
-            $user = $people[$key];
+        // Newest day first (then person): recent weeks are always complete and the
+        // ceilings only trim the distant past.
+        for ($day = 0; $day <= 182; $day++) {
+            $date = now()->subDays($day)->startOfDay();
 
-            for ($day = 84; $day >= 0; $day--) {
-                $date = now()->subDays($day)->startOfDay();
+            if ($date->isWeekend()) {
+                continue;
+            }
 
-                if ($date->isWeekend()) {
+            foreach ($assignments as $key => $projectKeys) {
+                $user = $people[$key];
+
+                // Nobody logs time before they joined the studio.
+                if ($joined[$user->id] && $date->lt(Carbon::parse($joined[$user->id])->startOfDay())) {
                     continue;
                 }
 
-                $available = collect($projectKeys)->filter(function ($projectKey) use ($projects, $date) {
+                $available = collect($projectKeys)->filter(function ($projectKey) use ($projects, $date, $caps, &$logged) {
                     $project = $projects[$projectKey];
+
+                    if ($logged[$projectKey] >= $caps[$projectKey]) {
+                        return false;
+                    }
 
                     // The planning-stage portal only has discovery prep logged in the last week.
                     if ($project->status === ProjectStatus::Planning) {
@@ -613,12 +648,12 @@ class DemoSeeder extends Seeder
 
                 $cursor = $date->copy()->setTime(9, mt_rand(0, 3) * 15);
                 $target = $key === 'owner' ? mt_rand(2, 4) * 60 : mt_rand(55, 78) * 6;
-                $logged = 0;
+                $minutesToday = 0;
 
-                while ($logged < $target) {
+                while ($minutesToday < $target) {
                     $projectKey = $available->random();
                     $project = $projects[$projectKey];
-                    $minutes = min($target - $logged, Arr::random([45, 60, 90, 120, 150, 180]));
+                    $minutes = min($target - $minutesToday, Arr::random([45, 60, 90, 120, 150, 180]));
                     $start = $cursor->copy();
                     $end = $start->copy()->addMinutes($minutes);
 
@@ -640,7 +675,8 @@ class DemoSeeder extends Seeder
                         'updated_at' => $end,
                     ];
 
-                    $logged += $minutes;
+                    $minutesToday += $minutes;
+                    $logged[$projectKey] += $minutes / 60;
                     $cursor = $end->copy()->addMinutes(Arr::random([0, 15, 30, 60]));
                 }
             }
@@ -690,10 +726,12 @@ class DemoSeeder extends Seeder
             'shop' => [['Replatform assessment', 1, 8400], ['Migration planning', 96, 115]],
             'launch' => [['Campaign concept', 1, 9500], ['Launch landing page', 1, 14800], ['Motion teaser (30s)', 1, 11200], ['Press kit design', 1, 6400]],
             'report' => [['Editorial design', 1, 9800], ['Interactive microsite', 1, 12600], ['Print production', 1, 4800]],
+            'cafe' => [['Brand refresh & packaging system', 1, 26400], ['Shopify storefront build', 1, 38600], ['Subscription checkout', 1, 14400], ['Launch support & QA', 1, 9800]],
         ];
 
         // [project, months ago issued, item indexes, status override]
         $schedule = [
+            ['cafe', 5.6, [0], null], ['cafe', 4.4, [1], null], ['cafe', 3.4, [2, 3], null],
             ['report', 11.5, [0], null], ['report', 10.8, [1, 2], null], ['launch', 10.2, [0], null],
             ['shop', 9.6, [0], null], ['launch', 9.1, [1], null], ['launch', 8.4, [2, 3], null],
             ['shop', 7.9, [1], null], ['app', 7.2, [0], null], ['brand', 6.6, [0], null],

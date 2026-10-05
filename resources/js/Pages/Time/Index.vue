@@ -264,7 +264,7 @@ const canEdit = (entry) => entry.user_id === user.value?.id || can('time.view_al
                                         <span class="sm:hidden"> · {{ timeOf(entry.started_at) }}–{{ timeOf(entry.ended_at) }}</span>
                                     </p>
                                 </div>
-                                <Avatar v-if="showPeople && entry.user" :name="entry.user.name" :src="entry.user.avatar_url" size="xs" :title="entry.user.name" class="hidden sm:flex" />
+                                <Avatar v-if="showPeople && entry.user" :name="entry.user.name" :src="entry.user.avatar_url" size="xs" :title="entry.user.name" class="max-sm:hidden" />
                                 <CircleDollarSign class="size-4 shrink-0" :class="entry.billable ? 'text-success' : 'text-ink-3/40'" :aria-label="entry.billable ? 'Billable' : 'Non-billable'" role="img" />
                                 <span class="hidden shrink-0 text-right text-small whitespace-nowrap text-ink-3 tabular sm:block">{{ timeOf(entry.started_at) }} – {{ timeOf(entry.ended_at) }}</span>
                                 <span class="w-16 shrink-0 text-right text-body font-medium text-ink tabular">{{ formatDuration(entry.duration_seconds) }}</span>
