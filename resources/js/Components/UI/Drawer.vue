@@ -22,7 +22,8 @@ function close() {
     emit('close');
 }
 
-useDialog(open, panel, { onClose: close });
+// The panel itself takes focus so screen readers announce the dialog before its controls.
+useDialog(open, panel, { onClose: close, initialFocus: 'panel' });
 </script>
 
 <template>

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 #[Fillable(['workspace_id', 'attachable_type', 'attachable_id', 'project_id', 'client_id', 'uploaded_by', 'name', 'disk', 'path', 'mime_type', 'size', 'visible_to_client'])]
 class Attachment extends Model
@@ -62,6 +63,11 @@ class Attachment extends Model
     public function uploader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    public function downloadResponse(): StreamedResponse
+    {
+        return Storage::disk($this->disk)->download($this->path, $this->name);
     }
 
     /**

@@ -72,7 +72,10 @@ export function useDialog(openRef, panelRef, { onClose, initialFocus } = {}) {
 
         await nextTick();
 
-        const target = (initialFocus && panelRef.value?.querySelector(initialFocus)) || panelRef.value?.querySelector('[autofocus]') || panelRef.value?.querySelector(FOCUSABLE) || panelRef.value;
+        const target =
+            initialFocus === 'panel'
+                ? panelRef.value
+                : (initialFocus && panelRef.value?.querySelector(initialFocus)) || panelRef.value?.querySelector('[autofocus]') || panelRef.value?.querySelector(FOCUSABLE) || panelRef.value;
         target?.focus({ preventScroll: true });
     }
 

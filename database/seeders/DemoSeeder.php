@@ -434,7 +434,7 @@ class DemoSeeder extends Seeder
                 'creator_id' => $owner->id,
                 'due_date' => $due?->toDateString(),
                 'position' => $positions[$status->value],
-                'estimate_minutes' => Arr::random([60, 120, 180, 240, 360, 480]),
+                'estimate_minutes' => Arr::random([480, 720, 960, 1440, 1920]),
                 'visible_to_client' => in_array($title, $clientVisible, true),
             ]);
 
@@ -465,7 +465,7 @@ class DemoSeeder extends Seeder
     protected function taskDescription(string $title): string
     {
         $templates = [
-            "Scope, deliver and document **{$title}**.\n\n- Confirm requirements with the project lead\n- Share progress in the task thread\n- Attach final files before moving to Review",
+            "Scope, deliver and document {$title}.\n\n- Confirm requirements with the project lead\n- Share progress in the task thread\n- Attach final files before moving to Review",
             "Goal: {$title}.\n\nAcceptance criteria:\n- Matches the agreed design and copy\n- Works on mobile, tablet and desktop\n- Meets WCAG 2.2 AA",
             "{$title} — keep the client in the loop on decisions and note any scope changes here before starting.",
         ];
@@ -482,7 +482,7 @@ class DemoSeeder extends Seeder
     {
         $taskComments = [
             'Homepage Design' => [
-                ['sarah', "Uploaded v3 with the new hero treatment and tightened grid. @Muhammad can you take a look before the client review?", 3 * 24 * 60],
+                ['sarah', 'Uploaded v3 with the new hero treatment and tightened grid. @Muhammad can you take a look before the client review?', 3 * 24 * 60],
                 ['owner', 'Looks sharp. Let\'s tighten the spacing on the stats row and ship it.', 3 * 24 * 60 - 45],
                 ['sarah', 'Done — spacing updated and exported to the shared folder.', 2 * 24 * 60],
             ],
