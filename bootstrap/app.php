@@ -3,6 +3,8 @@
 use App\Http\Middleware\EnsureClientPortal;
 use App\Http\Middleware\EnsureTeamMember;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\ProtectDemoAccounts;
+use App\Http\Middleware\ResolveTokenWorkspace;
 use App\Http\Middleware\SetCurrentWorkspace;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -25,16 +27,19 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
+            ProtectDemoAccounts::class,
         ]);
 
         $middleware->alias([
             'workspace' => SetCurrentWorkspace::class,
             'team' => EnsureTeamMember::class,
             'portal' => EnsureClientPortal::class,
+            'api.workspace' => ResolveTokenWorkspace::class,
         ]);
 
         // The tenant must be resolved before route model binding so bound models are workspace-scoped.
         $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: SetCurrentWorkspace::class);
+        $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: ResolveTokenWorkspace::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

@@ -179,7 +179,7 @@ class DemoSeeder extends Seeder
         ], [$people['sarah'], $people['priya'], $people['james'], $people['lucas']], [
             ['Discovery & Strategy', 'completed', 55, true, 'approved'],
             ['Wireframes', 'completed', 34, true, 'approved'],
-            ['Visual Design', 'in_progress', 6, true, 'pending'],
+            ['Visual Design', 'completed', 2, true, 'pending'],
             ['Development', 'pending', -16, false, null],
             ['Launch', 'pending', -24, true, null],
         ], [

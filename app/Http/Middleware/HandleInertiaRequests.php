@@ -11,7 +11,10 @@ use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
 use App\Enums\WorkspaceRole;
 use App\Http\Resources\TimeEntryResource;
+use App\Models\Client;
 use App\Models\Invoice;
+use App\Models\Milestone;
+use App\Models\Project;
 use App\Models\Task;
 use App\Models\TimeEntry;
 use App\Models\User;
@@ -72,6 +75,7 @@ class HandleInertiaRequests extends Middleware
                     'timezone' => $user->timezone,
                     'email_verified' => $user->hasVerifiedEmail(),
                     'two_factor_enabled' => $user->hasEnabledTwoFactorAuthentication(),
+                    'is_demo' => $user->isDemo(),
                 ] : null,
             ],
             'workspace' => fn () => $current->check() ? [
@@ -92,6 +96,7 @@ class HandleInertiaRequests extends Middleware
                 'unread' => NotificationFeed::query($user, $current->id())->whereNull('read_at')->count(),
             ] : null,
             'timer' => fn () => $this->isTeamMember($user, $current) ? $this->runningTimer($user) : null,
+            'portal' => fn () => $this->portal($user, $current),
             'counts' => fn () => $this->isTeamMember($user, $current) ? [
                 'my_tasks' => Task::open()->where('assignee_id', $user->id)->count(),
                 'overdue_invoices' => $user->can('invoices.view') ? Invoice::where('status', 'overdue')->count() : 0,
@@ -117,6 +122,29 @@ class HandleInertiaRequests extends Middleware
                 'clientStatus' => ClientStatus::options(),
                 'role' => WorkspaceRole::options(),
             ],
+        ];
+    }
+
+    /**
+     * Context for client portal users: which client they represent and what awaits them.
+     *
+     * @return array<string, mixed>|null
+     */
+    protected function portal(?User $user, CurrentWorkspace $current): ?array
+    {
+        $membership = $user && $current->check() ? $user->membershipFor($current->id()) : null;
+
+        if (! $membership?->isClient()) {
+            return null;
+        }
+
+        $client = Client::find($membership->client_id);
+
+        return [
+            'client' => $client?->only(['id', 'name']),
+            'approvals' => Milestone::whereIn('project_id', Project::where('client_id', $membership->client_id)->select('id'))
+                ->where('requires_approval', true)->where('approval_status', 'pending')->count(),
+            'unpaid' => Invoice::where('client_id', $membership->client_id)->whereIn('status', InvoiceStatus::outstanding())->count(),
         ];
     }
 

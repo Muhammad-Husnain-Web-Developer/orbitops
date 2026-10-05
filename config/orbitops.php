@@ -15,6 +15,13 @@ return [
     'demo_login' => (bool) env('ORBITOPS_DEMO_LOGIN', true),
 
     /*
+    | Shared demo accounts. While demo login is on, changes that would lock other
+    | visitors out (password, email, two-factor, sessions, deleting or leaving the
+    | workspace) are blocked for these accounts.
+    */
+    'demo_accounts' => ['demo@orbitops.app', 'client@orbitops.app'],
+
+    /*
     |--------------------------------------------------------------------------
     | Blended hourly rate
     |--------------------------------------------------------------------------

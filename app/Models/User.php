@@ -148,6 +148,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * A shared demo persona whose credentials must keep working for every visitor.
+     */
+    public function isDemo(): bool
+    {
+        return config('orbitops.demo_login') && in_array(strtolower($this->email), config('orbitops.demo_accounts', []), true);
+    }
+
+    /**
      * Whether this user wants a given notification type on a given channel.
      */
     public function wantsNotification(string $type, string $channel): bool

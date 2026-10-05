@@ -18,6 +18,7 @@ use App\Http\Controllers\MarketingController;
 use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\Portal\PortalAccountController;
 use App\Http\Controllers\Portal\PortalApprovalController;
 use App\Http\Controllers\Portal\PortalDashboardController;
 use App\Http\Controllers\Portal\PortalFileController;
@@ -94,6 +95,16 @@ Route::middleware(['auth', 'verified', 'workspace'])->group(function () {
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
 
     /*
+    | Personal account settings: team members and client portal users alike
+    */
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::post('/general', [ProfileController::class, 'update'])->name('general.update');
+        Route::put('/notifications', [NotificationSettingsController::class, 'update'])->name('notifications.update');
+        Route::put('/appearance', [AppearanceController::class, 'update'])->name('appearance.update');
+        Route::delete('/security/sessions', [SecurityController::class, 'destroyOtherSessions'])->name('security.sessions.destroy');
+    });
+
+    /*
     | Internal workspace (team members only)
     */
     Route::middleware('team')->group(function () {
@@ -160,7 +171,6 @@ Route::middleware(['auth', 'verified', 'workspace'])->group(function () {
         Route::prefix('settings')->name('settings.')->group(function () {
             Route::redirect('/', '/settings/general')->name('index');
             Route::get('/general', [ProfileController::class, 'edit'])->name('general');
-            Route::post('/general', [ProfileController::class, 'update'])->name('general.update');
             Route::get('/workspace', [WorkspaceSettingsController::class, 'edit'])->name('workspace');
             Route::post('/workspace', [WorkspaceSettingsController::class, 'update'])->name('workspace.update');
             Route::get('/members', [MemberSettingsController::class, 'index'])->name('members');
@@ -169,11 +179,8 @@ Route::middleware(['auth', 'verified', 'workspace'])->group(function () {
             Route::get('/billing', [BillingController::class, 'index'])->name('billing');
             Route::put('/billing', [BillingController::class, 'update'])->name('billing.update');
             Route::get('/notifications', [NotificationSettingsController::class, 'edit'])->name('notifications');
-            Route::put('/notifications', [NotificationSettingsController::class, 'update'])->name('notifications.update');
             Route::get('/security', [SecurityController::class, 'edit'])->name('security');
-            Route::delete('/security/sessions', [SecurityController::class, 'destroyOtherSessions'])->name('security.sessions.destroy');
             Route::get('/appearance', [AppearanceController::class, 'edit'])->name('appearance');
-            Route::put('/appearance', [AppearanceController::class, 'update'])->name('appearance.update');
             Route::get('/integrations', [IntegrationController::class, 'index'])->name('integrations');
             Route::get('/api', [ApiTokenController::class, 'index'])->name('api');
             Route::post('/api/tokens', [ApiTokenController::class, 'store'])->name('api.tokens.store');
@@ -201,5 +208,6 @@ Route::middleware(['auth', 'verified', 'workspace'])->group(function () {
         Route::post('/projects/{project}/messages', [PortalMessageController::class, 'store'])->name('messages.store');
         Route::get('/approvals', [PortalApprovalController::class, 'index'])->name('approvals');
         Route::post('/milestones/{milestone}/review', [PortalApprovalController::class, 'review'])->name('approvals.review');
+        Route::get('/account', PortalAccountController::class)->name('account');
     });
 });

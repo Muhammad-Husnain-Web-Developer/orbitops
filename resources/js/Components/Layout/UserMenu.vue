@@ -8,6 +8,11 @@ import DropdownLabel from '@/Components/UI/DropdownLabel.vue';
 import DropdownSeparator from '@/Components/UI/DropdownSeparator.vue';
 import { useTheme } from '@/composables/useTheme';
 
+const props = defineProps({
+    // In the client portal: account page lives there and there are no keyboard shortcuts.
+    portal: { type: Boolean, default: false },
+});
+
 const emit = defineEmits(['shortcuts']);
 
 const page = usePage();
@@ -39,8 +44,8 @@ function logout() {
             </div>
         </div>
         <DropdownSeparator />
-        <DropdownItem :href="route('settings.general')" :icon="Settings">Account settings</DropdownItem>
-        <DropdownItem :icon="Keyboard" shortcut="?" @select="emit('shortcuts')">Keyboard shortcuts</DropdownItem>
+        <DropdownItem :href="props.portal ? route('portal.account') : route('settings.general')" :icon="Settings">Account settings</DropdownItem>
+        <DropdownItem v-if="!props.portal" :icon="Keyboard" shortcut="?" @select="emit('shortcuts')">Keyboard shortcuts</DropdownItem>
         <DropdownSeparator />
         <DropdownLabel>Theme</DropdownLabel>
         <DropdownItem v-for="theme in themes" :key="theme.value" :icon="theme.icon" :active="preference === theme.value" @select="setTheme(theme.value)">

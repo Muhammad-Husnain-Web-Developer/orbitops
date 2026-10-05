@@ -24,7 +24,7 @@ const id = useId();
             type="button"
             role="switch"
             :aria-checked="model"
-            :aria-label="label ? undefined : 'Toggle'"
+            :aria-label="label ? undefined : ($attrs['aria-label'] ?? 'Toggle')"
             :disabled="disabled"
             class="relative inline-flex shrink-0 cursor-pointer items-center rounded-full border transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
             :class="[model ? 'border-accent bg-accent' : 'border-line-strong bg-subtle', size === 'sm' ? 'h-4.5 w-8' : 'h-5.5 w-10']"
